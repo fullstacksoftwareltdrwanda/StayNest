@@ -28,7 +28,7 @@ export default async function PublicPropertyDetailsPage({
         address={property.address}
         city={property.city}
         country={property.country}
-        imageUrl={property.main_image_url}
+        imageUrl={property.main_image_url ?? null}
         type={property.type}
       />
 

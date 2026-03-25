@@ -1,6 +1,5 @@
 'use client'
 
-import { SearchOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 

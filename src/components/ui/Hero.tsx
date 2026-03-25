@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { SearchBar } from "@/components/search/SearchBar";
 
 export default function Hero() {
@@ -24,7 +25,9 @@ export default function Hero() {
         </p>
         
         <div className="z-10 relative">
-          <SearchBar />
+          <Suspense fallback={null}>
+            <SearchBar />
+          </Suspense>
         </div>
         
         <div className="mt-20 flex flex-wrap justify-center gap-12 opacity-40 grayscale group-hover:grayscale-0 transition-all duration-500">
