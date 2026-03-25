@@ -7,7 +7,7 @@ import { Plus, Home, MapPin } from 'lucide-react'
 export default async function OwnerDashboard() {
   const { profile } = await requireRole(['owner', 'admin'])
   const properties = await getOwnerProperties()
-
+  //testing
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -29,7 +29,7 @@ export default async function OwnerDashboard() {
         <Link href="/owner/properties/new">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Add New Property
+            Add New Property !
           </Button>
         </Link>
       </div>
@@ -62,7 +62,7 @@ export default async function OwnerDashboard() {
           <h3 className="text-lg font-bold text-gray-900">Recent Listings</h3>
           <Link href="/owner/properties" className="text-sm font-medium text-blue-600 hover:text-blue-700">View All</Link>
         </div>
-        
+
         {properties.length === 0 ? (
           <div className="p-16 text-center text-gray-400 italic">
             You haven't added any properties yet.
@@ -81,14 +81,13 @@ export default async function OwnerDashboard() {
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                       <h4 className="font-bold text-gray-900">{property.name}</h4>
-                       <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest border ${
-                         property.status === 'approved' ? 'bg-green-50 text-green-600 border-green-100' :
-                         property.status === 'pending' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                         'bg-gray-50 text-gray-500 border-gray-100'
-                       }`}>
-                         {property.status}
-                       </span>
+                      <h4 className="font-bold text-gray-900">{property.name}</h4>
+                      <span className={`px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-widest border ${property.status === 'approved' ? 'bg-green-50 text-green-600 border-green-100' :
+                          property.status === 'pending' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
+                            'bg-gray-50 text-gray-500 border-gray-100'
+                        }`}>
+                        {property.status}
+                      </span>
                     </div>
                     <p className="text-xs text-gray-500 flex items-center">
                       <MapPin className="w-3 h-3 mr-1" />
@@ -114,7 +113,7 @@ export default async function OwnerDashboard() {
         <div className="flex-1">
           <h4 className="text-lg font-bold text-blue-900 mb-1 leading-tight">Property Not Visible in Search?</h4>
           <p className="text-blue-700/80 text-sm leading-relaxed">
-            Only properties with <span className="font-bold text-blue-800 uppercase tracking-widest text-[10px] px-2 py-0.5 bg-blue-100 rounded-md ml-1">Approved</span> status are visible to guests in the public search. 
+            Only properties with <span className="font-bold text-blue-800 uppercase tracking-widest text-[10px] px-2 py-0.5 bg-blue-100 rounded-md ml-1">Approved</span> status are visible to guests in the public search.
             Make sure your property has at least one room and has been reviewed by an administrator.
           </p>
         </div>
