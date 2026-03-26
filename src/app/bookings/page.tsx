@@ -1,6 +1,7 @@
 import { getUserBookings } from '@/lib/bookings/getUserBookings'
 import { BookingCard } from '@/components/bookings/booking-card'
-import { BookingEmptyState } from '@/components/bookings/booking-empty-state'
+import { EmptyState } from '@/components/shared/empty-state'
+import { PageHeader } from '@/components/shared/page-header'
 import { requireRole } from '@/lib/auth/requireRole'
 
 export default async function MyBookingsPage() {
@@ -8,17 +9,23 @@ export default async function MyBookingsPage() {
   const bookings = await getUserBookings()
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-24 pb-20">
+    <div className="bg-gray-50/30 min-h-screen pt-28 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-2">My Bookings</h1>
-          <p className="text-gray-500">Manage your reservations and travel history at StayNest.</p>
-        </div>
+        <PageHeader
+          title="My Bookings"
+          subtitle="Manage your reservations and travel history at Urugostay."
+        />
 
         {bookings.length === 0 ? (
-          <BookingEmptyState />
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <EmptyState
+              variant="bookings"
+              actionLabel="Find a stay"
+              actionHref="/search"
+            />
+          </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {bookings.map((booking) => (
               <BookingCard key={booking.id} booking={booking} />
             ))}

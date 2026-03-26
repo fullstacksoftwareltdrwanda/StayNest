@@ -1,28 +1,38 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
+import { ShieldX, Home, ArrowLeft } from 'lucide-react'
 
 export default function UnauthorizedPage() {
   return (
-    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 text-center">
-      <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-      </div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Access Denied</h1>
-      <p className="text-gray-600 max-w-md mb-8 leading-relaxed">
-        Oops! You don't have the required role to access this page. This usually happens if you haven't switched to the **Host** role yet.
-      </p>
-      
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <form action="/api/auth/become-host" method="POST">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100">
-            Become a Host Now
-          </Button>
-        </form>
-        <Link href="/">
-          <Button variant="outline" size="lg">Return to Homepage</Button>
-        </Link>
+    <div className="min-h-screen bg-gray-50/30 pt-24 flex items-center justify-center px-4">
+      <div className="max-w-md w-full text-center animate-fade-in">
+        <div className="w-20 h-20 bg-red-50 text-red-400 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-100">
+          <ShieldX className="w-9 h-9" />
+        </div>
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-3">Access Denied</h1>
+        <p className="text-gray-500 leading-relaxed mb-8 max-w-sm mx-auto">
+          You don't have permission to view this page. Please check you're signed in with the correct account.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href="/">
+            <Button className="rounded-2xl gap-2">
+              <Home className="w-4 h-4" />
+              Go to Homepage
+            </Button>
+          </Link>
+          <Link href="/login">
+            <Button variant="outline" className="rounded-2xl gap-2">
+              <ArrowLeft className="w-4 h-4" />
+              Sign In
+            </Button>
+          </Link>
+        </div>
+
+        <p className="text-xs text-gray-400 mt-8">
+          If you believe this is an error, contact{' '}
+          <span className="text-blue-500 font-medium">support@urugostay.com</span>
+        </p>
       </div>
     </div>
   )

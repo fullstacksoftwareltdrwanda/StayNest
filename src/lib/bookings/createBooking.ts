@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { CreateBookingInput } from '@/types/booking'
 import { revalidatePath } from 'next/cache'
 
+import { createNotification } from '@/lib/notifications/createNotification'
+
 export async function createBooking(input: CreateBookingInput) {
   const supabase = await createClient()
   
@@ -17,7 +19,7 @@ export async function createBooking(input: CreateBookingInput) {
       user_id: user.id,
       status: 'confirmed'
     })
-    .select()
+    .select('*, property:properties(name)')
     .single()
 
   if (error) {
@@ -31,6 +33,31 @@ export async function createBooking(input: CreateBookingInput) {
     throw error
   }
 
+  // Create notification for the guest
+  await createNotification({
+    user_id: user.id,
+    title: 'Booking Confirmed!',
+    message: `Your stay at ${data.property?.name} has been successfully booked.`,
+    type: 'booking'
+  })
+
+  // Create notification for the owner
+  const { data: propertyData } = await supabase
+    .from('properties')
+    .select('owner_id')
+    .eq('id', input.property_id)
+    .single()
+
+  if (propertyData?.owner_id) {
+    await createNotification({
+      user_id: propertyData.owner_id,
+      title: 'New Booking Received!',
+      message: `Someone just booked your property: ${data.property?.name}.`,
+      type: 'booking'
+    })
+  }
+
   revalidatePath('/bookings')
+  revalidatePath('/owner/dashboard')
   return data
 }

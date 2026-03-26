@@ -11,6 +11,9 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
       rooms (
         price_per_night,
         capacity
+      ),
+      reviews (
+        rating
       )
     `)
     .eq('status', 'approved')
@@ -43,7 +46,13 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
     .map((p: any) => {
       const roomPrices = p.rooms?.map((r: any) => r.price_per_night) || []
       const roomCapacities = p.rooms?.map((r: any) => r.capacity) || []
+      const reviewRatings = p.reviews?.map((r: any) => r.rating) || []
       
+      const reviewCount = reviewRatings.length
+      const avgRating = reviewCount > 0 
+        ? parseFloat((reviewRatings.reduce((a: number, b: number) => a + b, 0) / reviewCount).toFixed(1))
+        : null
+
       return {
         id: p.id,
         name: p.name,
@@ -55,6 +64,8 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
         main_image_url: p.main_image_url,
         starting_price: roomPrices.length > 0 ? Math.min(...roomPrices) : null,
         capacity: roomCapacities.length > 0 ? Math.max(...roomCapacities) : 0,
+        average_rating: avgRating,
+        review_count: reviewCount,
       }
     })
     .filter((p) => {

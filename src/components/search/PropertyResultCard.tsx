@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PropertySearchResult } from '@/types/search'
 import { MapPin, Home, ArrowRight } from 'lucide-react'
+import { RatingStars } from '../reviews/rating-stars'
 
 interface PropertyResultCardProps {
   property: PropertySearchResult
@@ -37,6 +38,13 @@ export function PropertyResultCard({ property }: PropertyResultCardProps) {
             <MapPin className="w-4 h-4 mr-1 text-blue-500" />
             <span>{property.city}, {property.country}</span>
           </div>
+        </div>
+
+        <div className="flex items-center gap-2 mb-4">
+          <RatingStars rating={property.average_rating || 0} size={14} />
+          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            ({property.review_count} {property.review_count === 1 ? 'review' : 'reviews'})
+          </span>
         </div>
 
         <p className="text-sm text-gray-500 line-clamp-2 mb-6 leading-relaxed flex-1">

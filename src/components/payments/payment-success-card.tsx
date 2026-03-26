@@ -82,7 +82,7 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-50">
-            <Link href={`/bookings/history`} className="flex-1">
+            <Link href="/bookings" className="flex-1">
               <div className="w-full py-6 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-black text-sm uppercase tracking-widest rounded-[1.8rem] transition-all flex items-center justify-center gap-2 group border border-gray-100">
                 View All Bookings
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
@@ -99,7 +99,7 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
       </div>
       
       <p className="text-center text-gray-400 text-xs font-medium mt-10">
-        Need help? Contact our support at <span className="text-blue-600 underline font-bold">support@staynest.com</span>
+        Need help? Contact our support at <span className="text-blue-600 underline font-bold">support@urugostay.com</span>
       </p>
     </div>
   )

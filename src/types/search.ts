@@ -17,4 +17,6 @@ export interface PropertySearchResult {
   main_image_url: string | null;
   starting_price: number | null;
   capacity: number;
+  average_rating: number | null;
+  review_count: number;
 }

@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { PaymentStatus } from '@/types/payment'
 import { revalidatePath } from 'next/cache'
 
+import { createNotification } from '@/lib/notifications/createNotification'
+
 export async function updatePaymentStatus(paymentId: string, status: PaymentStatus, transactionReference?: string) {
   const supabase = await createClient()
 
@@ -28,8 +30,35 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
     throw error
   }
 
+  // If payment was successful, notify the user
+  if (status === 'paid') {
+     await createNotification({
+       user_id: data.user_id,
+       title: 'Payment Successful!',
+       message: `Your payment of $${data.amount} has been processed successfully.`,
+       type: 'payment'
+     })
+
+     // Notify the owner as well
+     const { data: bookingData } = await supabase
+       .from('bookings')
+       .select('property:properties(owner_id, name)')
+       .eq('id', data.booking_id)
+       .single()
+    
+     if ((bookingData as any)?.property?.owner_id) {
+        await createNotification({
+          user_id: (bookingData as any).property.owner_id,
+          title: 'Payment Received!',
+          message: `You received a payment of $${data.amount} for ${(bookingData as any).property.name}.`,
+          type: 'payment'
+        })
+     }
+  }
+
   revalidatePath(`/payments/success/${paymentId}`)
   revalidatePath(`/bookings/${data.booking_id}`)
+  revalidatePath('/owner/dashboard')
 
   return data
 }

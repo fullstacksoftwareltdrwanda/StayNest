@@ -28,6 +28,7 @@ export interface Booking {
     price_per_night: number;
     bed_type: string;
   };
+  reviews?: { id: string }[];
 }
 
 export interface CreateBookingInput {

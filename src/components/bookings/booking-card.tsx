@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Booking } from '@/types/booking'
 import { BookingStatusBadge } from './booking-status-badge'
-import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react'
+import { Calendar, MapPin, Users, ArrowRight, MessageSquare } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 
 interface BookingCardProps {
@@ -82,6 +82,22 @@ export function BookingCard({ booking }: BookingCardProps) {
                       <ArrowRight size={14} />
                     </div>
                   </Link>
+                )}
+
+                {booking.status === 'completed' && (!booking.reviews || booking.reviews.length === 0) && (
+                  <Link href={`/reviews/new/${booking.id}`}>
+                    <div className="px-6 py-3 bg-white border border-blue-200 text-blue-600 text-xs font-black uppercase tracking-widest rounded-xl hover:bg-blue-50 transition-all flex items-center gap-2">
+                      <MessageSquare size={14} />
+                      Review This Stay
+                    </div>
+                  </Link>
+                )}
+                
+                {booking.status === 'completed' && booking.reviews && booking.reviews.length > 0 && (
+                   <div className="px-6 py-3 bg-green-50 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-xl border border-green-100 flex items-center gap-2">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                      Reviewed
+                   </div>
                 )}
               </div>
             </div>

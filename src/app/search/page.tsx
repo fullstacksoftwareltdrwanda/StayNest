@@ -2,8 +2,9 @@ import { searchProperties } from '@/lib/search/searchProperties'
 import { SearchBar } from '@/components/search/SearchBar'
 import { SearchFilters } from '@/components/search/SearchFilters'
 import { PropertyResultCard } from '@/components/search/PropertyResultCard'
-import { SearchEmptyState } from '@/components/search/SearchEmptyState'
+import { EmptyState } from '@/components/shared/empty-state'
 import { SearchFilters as SearchFiltersType } from '@/types/search'
+import { SlidersHorizontal } from 'lucide-react'
 
 export default async function SearchPage({ 
   searchParams 
@@ -21,55 +22,67 @@ export default async function SearchPage({
   }
 
   const results = await searchProperties(filters)
+  const hasActiveFilters = Object.values(filters).some(v => v !== undefined && v !== '')
 
   return (
-    <div className="min-h-screen bg-gray-50/50 pb-20">
-      {/* Top Search Header */}
-      <div className="bg-white border-b border-gray-100 pt-8 pb-12 shadow-sm sticky top-0 z-20">
+    <div className="min-h-screen bg-gray-50/30 pb-20">
+      {/* Sticky Search Header */}
+      <div className="bg-white/95 backdrop-blur-md border-b border-gray-100 pt-20 pb-6 sticky top-0 z-20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SearchBar />
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+          
           {/* Filters Sidebar */}
           <aside className="lg:col-span-1">
-            <SearchFilters />
+            <div className="sticky top-36">
+              <div className="flex items-center gap-2 mb-4">
+                <SlidersHorizontal className="w-4 h-4 text-gray-400" />
+                <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Filters</span>
+              </div>
+              <SearchFilters />
+            </div>
           </aside>
 
-          {/* Results Grid */}
+          {/* Results */}
           <main className="lg:col-span-3">
-            <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+                <h2 className="text-xl font-black text-gray-900 tracking-tight">
                   {results.length} {results.length === 1 ? 'property' : 'properties'} found
                 </h2>
                 {filters.destination ? (
-                  <p className="text-gray-500 text-sm mt-1">
-                    Showing results in <span className="text-blue-600 font-bold">"{filters.destination}"</span>
+                  <p className="text-gray-400 text-xs mt-1 font-medium">
+                    Results for <span className="text-blue-600 font-bold">"{filters.destination}"</span>
                   </p>
                 ) : (
-                  <p className="text-gray-400 text-xs mt-1 uppercase tracking-widest font-bold">
-                    Showing all approved properties
-                  </p>
+                  <p className="text-gray-400 text-xs mt-1 font-bold uppercase tracking-widest">All approved properties</p>
                 )}
               </div>
-              
-              {results.length === 0 && (
-                <div className="hidden md:block bg-blue-50 border border-blue-100 p-4 rounded-2xl max-w-xs">
-                  <p className="text-[10px] text-blue-600 leading-relaxed">
-                    <span className="font-bold block mb-1">OWNER TIP:</span>
-                    Only properties with <span className="font-bold uppercase">Approved</span> status and at least one room are visible here. Check your dashboard to manage your listings.
+
+              {hasActiveFilters && results.length === 0 && (
+                <div className="hidden md:block bg-amber-50 border border-amber-100 px-4 py-3 rounded-2xl max-w-xs">
+                  <p className="text-xs text-amber-700 font-medium leading-relaxed">
+                    No results matched your filters. Try adjusting them or{' '}
+                    <a href="/search" className="font-bold underline">clearing all filters</a>.
                   </p>
                 </div>
               )}
             </div>
 
             {results.length === 0 ? (
-              <SearchEmptyState />
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm">
+                <EmptyState
+                  variant="search"
+                  actionLabel="Clear all filters"
+                  actionHref="/search"
+                />
+              </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {results.map((property) => (
                   <PropertyResultCard key={property.id} property={property} />
                 ))}

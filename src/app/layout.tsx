@@ -6,7 +6,7 @@ import Navbar from "@/components/ui/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StayNest | Find your perfect stay",
+  title: "Urugostay | Find your perfect stay",
   description: "Book unique accommodations around the world.",
 };
 
@@ -16,10 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-white text-gray-900 antialiased`}>
         <Navbar />
-        <main className="pt-16">
+        <main>
           {children}
         </main>
       </body>

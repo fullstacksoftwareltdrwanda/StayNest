@@ -13,7 +13,8 @@ export async function getUserBookings() {
       *,
       property:properties(name, city, country, main_image_url),
       room:rooms(name),
-      payments(*)
+      payments(*),
+      reviews(id)
     `)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
@@ -35,7 +36,8 @@ export async function getBookingById(id: string) {
       *,
       property:properties(name, city, country, main_image_url, address, type),
       room:rooms(name, description, price_per_night, bed_type),
-      payments(*)
+      payments(*),
+      reviews(id)
     `)
     .eq('id', id)
     .single()

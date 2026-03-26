@@ -26,10 +26,10 @@ export function PropertyOverview({ property }: PropertyOverviewProps) {
             <div className="p-3 bg-green-50 rounded-2xl">
               <ShieldCheck className="w-6 h-6 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">StayNest Guarantee</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Urugostay Guarantee</h2>
           </div>
           <p className="text-gray-500 max-w-xl text-lg leading-relaxed">
-            Every booking through StayNest is backed by our full support and price-match guarantee. We ensure your host is verified and ready to welcome you.
+            Every booking through Urugostay is backed by our full support and price-match guarantee. We ensure your host is verified and ready to welcome you.
           </p>
         </div>
       </div>
