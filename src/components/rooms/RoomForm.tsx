@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/Input'
 import { FormContainer } from '@/components/forms/FormContainer'
 import { RoomFacilitiesSelector } from './RoomFacilitiesSelector'
 import { Loader2 } from 'lucide-react'
+import { MultiImageUpload } from '@/components/shared/MultiImageUpload'
 
 interface RoomFormProps {
   propertyId: string
@@ -28,13 +29,17 @@ export function RoomForm({ propertyId, room }: RoomFormProps) {
     bed_type: room?.bed_type || 'Double',
     size_sqm: room?.size_sqm || 25,
     facilities: room?.facilities || [],
+    images: room?.images || [],
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
-    // Allow empty string for numeric inputs while typing to prevent NaN
     const val = type === 'number' && value === '' ? '' : (type === 'number' ? parseFloat(value) : value)
     setFormData((prev) => ({ ...prev, [name]: val }))
+  }
+
+  const handleImagesUpload = (urls: string[]) => {
+    setFormData((prev) => ({ ...prev, images: urls }))
   }
 
   const handleFacilitiesChange = (facilities: string[]) => {
@@ -43,7 +48,14 @@ export function RoomForm({ propertyId, room }: RoomFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!formData.images || formData.images.length === 0) {
+      alert('Please upload at least one photo for the room.')
+      return
+    }
+
     setLoading(true)
+    // ... rest of handleSubmit
 
     try {
       if (room) {
@@ -68,6 +80,13 @@ export function RoomForm({ propertyId, room }: RoomFormProps) {
       className="max-w-4xl"
     >
       <div className="space-y-8">
+        <MultiImageUpload 
+          label="Room Photos"
+          bucket="room-images"
+          initialImages={formData.images}
+          onUpload={handleImagesUpload}
+          minImages={1}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
             label="Room Name"

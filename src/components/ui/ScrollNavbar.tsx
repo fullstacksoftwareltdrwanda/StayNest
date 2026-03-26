@@ -6,15 +6,17 @@ import { Search } from 'lucide-react'
 import { NotificationBell } from '@/components/notifications/notification-bell'
 import { AirbnbNavMenu } from '@/components/ui/AirbnbNavMenu'
 import { cn } from '@/utils/cn'
+import { useSettings } from '@/context/SettingsContext'
 
 interface ScrollNavbarProps {
-  user: { name: string; initial: string; role: string } | null
+  user: { name: string; initial: string; role: string; avatarUrl?: string | null } | null
   dashboardLink: string
   isHome?: boolean
 }
 
 export function ScrollNavbar({ user, dashboardLink, isHome = false }: ScrollNavbarProps) {
   const [scrolled, setScrolled] = useState(false)
+  const { t } = useSettings()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -54,7 +56,7 @@ export function ScrollNavbar({ user, dashboardLink, isHome = false }: ScrollNavb
               className="hidden md:flex items-center gap-3 px-5 py-2 rounded-full border border-gray-200 shadow-sm hover:shadow-md transition-all bg-white text-sm font-semibold group"
             >
               <Search className="w-4 h-4 text-gray-400 group-hover:text-[var(--primary)] transition-colors" />
-              <span className="text-gray-400 font-medium">Search destinations...</span>
+              <span className="text-gray-400 font-medium">{t('nav.stays')}...</span>
             </Link>
           )}
 

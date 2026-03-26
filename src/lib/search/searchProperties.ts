@@ -40,17 +40,30 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
     return []
   }
 
+  // Fetch user favorites if logged in
+  const { data: { user } } = await supabase.auth.getUser()
+  const favoritePropertyIds = new Set<string>()
+  
+  if (user) {
+    const { data: favs } = await supabase
+      .from('favorites')
+      .select('property_id')
+      .eq('user_id', user.id)
+    
+    favs?.forEach(f => favoritePropertyIds.add(f.property_id))
+  }
+
   // Map results and apply post-query filters (price, capacity)
   // Logic: starting_price is min(rooms.price), max_capacity is max(rooms.capacity)
   const results: PropertySearchResult[] = data
     .map((p: any) => {
       const roomPrices = p.rooms?.map((r: any) => r.price_per_night) || []
       const roomCapacities = p.rooms?.map((r: any) => r.capacity) || []
-      const reviewRatings = p.reviews?.map((r: any) => r.rating) || []
+      const ratings = p.reviews?.map((r: any) => r.rating) || []
       
-      const reviewCount = reviewRatings.length
+      const reviewCount = ratings.length
       const avgRating = reviewCount > 0 
-        ? parseFloat((reviewRatings.reduce((a: number, b: number) => a + b, 0) / reviewCount).toFixed(1))
+        ? parseFloat((ratings.reduce((a: number, b: number) => a + b, 0) / reviewCount).toFixed(1))
         : null
 
       return {
@@ -66,6 +79,7 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
         capacity: roomCapacities.length > 0 ? Math.max(...roomCapacities) : 0,
         average_rating: avgRating,
         review_count: reviewCount,
+        is_favorited: favoritePropertyIds.has(p.id)
       }
     })
     .filter((p) => {
@@ -77,7 +91,8 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
       if (filters.maxPrice && p.starting_price > filters.maxPrice) return false
       
       // Capacity filter
-      if (filters.capacity && p.capacity < filters.capacity) return false
+      const requiredCapacity = filters.capacity || filters.guests
+      if (requiredCapacity && p.capacity < requiredCapacity) return false
       
       return true
     })

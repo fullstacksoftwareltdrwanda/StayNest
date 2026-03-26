@@ -3,17 +3,19 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { Building, Home, Castle, TreePalm, Wallet, ChevronLeft, ChevronRight } from 'lucide-react'
-
-const categories = [
-  { icon: Building, label: 'Hotels', type: 'hotel' },
-  { icon: Home, label: 'Apartments', type: 'apartment' },
-  { icon: Castle, label: 'Villas', type: 'villa' },
-  { icon: TreePalm, label: 'Resorts', type: 'resort' },
-  { icon: Wallet, label: 'Budget', type: 'budget' },
-]
+import { useSettings } from '@/context/SettingsContext'
 
 export function CategoryScroller() {
+  const { t } = useSettings()
   const scrollRef = useRef<HTMLDivElement>(null)
+
+  const categories = [
+    { icon: Building, label: t('common.property_types.hotel'), type: 'hotel' },
+    { icon: Home, label: t('common.property_types.apartment'), type: 'apartment' },
+    { icon: Castle, label: t('common.property_types.villa'), type: 'villa' },
+    { icon: TreePalm, label: t('common.property_types.resort'), type: 'resort' },
+    { icon: Wallet, label: t('common.property_types.budget'), type: 'budget' },
+  ]
 
   const scroll = (dir: 'left' | 'right') => {
     scrollRef.current?.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' })

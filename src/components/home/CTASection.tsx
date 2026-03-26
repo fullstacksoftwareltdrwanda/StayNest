@@ -1,7 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 export function CTASection() {
+  const { t } = useSettings()
+
   return (
     <section className="relative overflow-hidden rounded-3xl mx-4 sm:mx-0">
       {/* Background */}
@@ -12,17 +17,17 @@ export function CTASection() {
       <div className="relative z-10 py-20 px-8 sm:px-16 flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="max-w-lg text-center md:text-left">
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
-            List your property with us
+            {t('home.cta.title')}
           </h2>
           <p className="text-white/70 text-base sm:text-lg leading-relaxed">
-            Join thousands of hosts earning income by sharing their unique spaces with travellers from around the world.
+            {t('home.cta.subtitle')}
           </p>
         </div>
         <Link
           href="/register"
           className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--accent)] hover:bg-[var(--accent-light)] text-[var(--primary-dark)] font-black rounded-xl transition-all shadow-lg hover:shadow-xl active:scale-[0.98] text-sm uppercase tracking-widest shrink-0"
         >
-          Become a Host
+          {t('home.cta.button')}
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

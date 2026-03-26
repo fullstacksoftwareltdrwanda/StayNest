@@ -8,6 +8,7 @@ import { createPayment } from '@/lib/payments/createPayment'
 import { PaymentMethodSelector } from './payment-method-selector'
 import { Button } from '@/components/ui/Button'
 import { Loader2, ShieldCheck, Lock } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 interface PaymentFormProps {
   booking: Booking
@@ -15,6 +16,7 @@ interface PaymentFormProps {
 
 export function PaymentForm({ booking }: PaymentFormProps) {
   const router = useRouter()
+  const { t, formatPrice } = useSettings()
   const [loading, setLoading] = useState(false)
   const [method, setMethod] = useState<PaymentMethod>('card')
 
@@ -33,7 +35,7 @@ export function PaymentForm({ booking }: PaymentFormProps) {
       router.push(`/payments/success/${payment.id}`)
     } catch (error) {
       console.error('Payment failed:', error)
-      alert('Payment failed. Please try again.')
+      alert(t('payment.error_payment'))
     } finally {
       setLoading(false)
     }
@@ -45,7 +47,7 @@ export function PaymentForm({ booking }: PaymentFormProps) {
         <div className="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center">
           <ShieldCheck size={20} strokeWidth={2.5} />
         </div>
-        <span className="text-sm font-black text-gray-900 uppercase tracking-widest">Secure Checkout</span>
+        <span className="text-sm font-black text-gray-900 uppercase tracking-widest">{t('payment.secure_checkout')}</span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-12">
@@ -60,9 +62,9 @@ export function PaymentForm({ booking }: PaymentFormProps) {
               <Lock size={18} className="text-gray-400" />
             </div>
             <div>
-              <p className="font-bold text-gray-900 text-sm leading-relaxed mb-2">Terms & Conditions</p>
+              <p className="font-bold text-gray-900 text-sm leading-relaxed mb-2">{t('payment.terms_title')}</p>
               <p className="text-xs text-gray-400 font-medium leading-loose">
-                By clicking "Complete Payment", you agree to the property's booking conditions and StayNest's customer terms. Your payment information is encrypted and securely processed.
+                {t('payment.terms_text')}
               </p>
             </div>
           </div>
@@ -76,11 +78,11 @@ export function PaymentForm({ booking }: PaymentFormProps) {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-              Processing Securely...
+              {t('payment.processing_securely')}
             </>
           ) : (
             <>
-              Complete Payment — ${booking.total_price}
+              {t('payment.complete_payment_btn', { price: formatPrice(booking.total_price) })}
             </>
           )}
         </Button>

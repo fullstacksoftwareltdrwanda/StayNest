@@ -1,3 +1,5 @@
+'use client'
+
 interface SectionHeaderProps {
   label?: string
   title: string

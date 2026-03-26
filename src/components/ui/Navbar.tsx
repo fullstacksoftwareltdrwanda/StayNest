@@ -25,8 +25,9 @@ export default async function Navbar({ isHome = false }: NavbarProps) {
         profile
           ? {
               name: profile.full_name,
-              initial: profile.full_name.charAt(0),
+              initial: profile.full_name.charAt(0).toUpperCase(),
               role: profile.role,
+              avatarUrl: profile.avatar_url
             }
           : null
       }

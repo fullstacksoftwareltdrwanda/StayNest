@@ -9,6 +9,7 @@ export interface Room {
   bed_type: string | null;
   size_sqm: number | null;
   facilities: string[];
+  images?: string[];
   created_at: string;
   updated_at: string;
 }

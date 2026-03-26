@@ -7,5 +7,10 @@ export interface Profile {
   role: UserRole;
   phone?: string;
   avatar_url?: string;
+  status?: string;
+  legal_name?: string;
+  preferred_name?: string;
+  language?: string;
+  currency?: string;
   created_at: string;
 }

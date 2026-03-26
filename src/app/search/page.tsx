@@ -18,7 +18,10 @@ export default async function SearchPage({
     type: params.type as string,
     minPrice: params.minPrice ? parseInt(params.minPrice as string) : undefined,
     maxPrice: params.maxPrice ? parseInt(params.maxPrice as string) : undefined,
-    capacity: params.capacity ? parseInt(params.capacity as string) : undefined,
+    capacity: params.capacity ? parseInt(params.capacity as string) : (params.guests ? parseInt(params.guests as string) : undefined),
+    checkIn: params.checkIn as string,
+    checkOut: params.checkOut as string,
+    guests: params.guests ? parseInt(params.guests as string) : undefined,
   }
 
   const results = await searchProperties(filters)

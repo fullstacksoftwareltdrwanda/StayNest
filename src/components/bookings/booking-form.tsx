@@ -8,6 +8,8 @@ import { createBooking } from '@/lib/bookings/createBooking'
 import { getNightsCount, calculateBookingTotal } from '@/lib/bookings/calculateBookingTotal'
 import { Loader2, Calendar, Users as UsersIcon } from 'lucide-react'
 
+import { useSettings } from '@/context/SettingsContext'
+
 interface BookingFormProps {
   propertyId: string
   roomId: string
@@ -18,6 +20,7 @@ interface BookingFormProps {
 
 export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDetailsChange }: BookingFormProps) {
   const router = useRouter()
+  const { t } = useSettings()
   const [loading, setLoading] = useState(false)
   
   // Default to tomorrow and the day after
@@ -62,7 +65,7 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
       router.push(`/bookings/success/${booking.id}`)
     } catch (error) {
       console.error('Booking failed:', error)
-      alert('Failed to create booking. Please try again.')
+      alert(t('booking.error_create'))
     } finally {
       setLoading(false)
     }
@@ -72,7 +75,7 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
     <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 ml-1">Check-in Date</label>
+          <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.check_in')}</label>
           <div className="relative">
             <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
             <input
@@ -87,7 +90,7 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 ml-1">Check-out Date</label>
+          <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.check_out')}</label>
           <div className="relative">
             <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
             <input
@@ -103,7 +106,7 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-bold text-gray-700 ml-1">Number of Guests</label>
+        <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.num_guests')}</label>
         <div className="relative">
           <UsersIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
           <input
@@ -120,7 +123,7 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
           />
         </div>
         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2 ml-1">
-          Max capacity for this room: {maxCapacity} guests
+          {t('confirm.max_capacity')}: {maxCapacity} {t('property.guests')}
         </p>
       </div>
 
@@ -133,10 +136,10 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
           {loading ? (
             <>
               <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-              Processing Reservation...
+              {t('confirm.processing')}
             </>
           ) : (
-            'Confirm Reservation'
+            t('confirm.confirm_btn')
           )}
         </Button>
       </div>

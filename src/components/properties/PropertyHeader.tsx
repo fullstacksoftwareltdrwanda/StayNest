@@ -1,5 +1,8 @@
+'use client'
+
 import Image from 'next/image'
 import { MapPin, Home } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 interface PropertyHeaderProps {
   name: string
@@ -11,6 +14,8 @@ interface PropertyHeaderProps {
 }
 
 export function PropertyHeader({ name, address, city, country, imageUrl, type }: PropertyHeaderProps) {
+  const { t } = useSettings()
+
   return (
     <div className="bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -18,7 +23,7 @@ export function PropertyHeader({ name, address, city, country, imageUrl, type }:
           <div>
             <div className="flex items-center space-x-3 mb-3">
                <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-blue-100">
-                {type}
+                {t(`common.property_types.${type.toLowerCase()}`)}
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-3">

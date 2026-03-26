@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { RatingStars } from './rating-stars'
 import { createReview } from '@/lib/reviews/createReview'
 import { Button } from '@/components/ui/Button'
+import { useSettings } from '@/context/SettingsContext'
 
 interface ReviewFormProps {
   bookingId: string
@@ -14,6 +15,7 @@ interface ReviewFormProps {
 
 export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormProps) {
   const router = useRouter()
+  const { t } = useSettings()
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -52,13 +54,13 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
   return (
     <form onSubmit={handleSubmit} className="bg-white p-10 md:p-14 rounded-[4rem] border border-gray-100 shadow-2xl shadow-blue-50/50">
       <div className="mb-10 text-center">
-        <h2 className="text-3xl font-black tracking-tight text-gray-900 mb-2">Review your stay</h2>
-        <p className="text-gray-500 font-medium tracking-tight">How was your time at <span className="text-blue-600 font-bold">{propertyName}</span>?</p>
+        <h2 className="text-3xl font-black tracking-tight text-gray-900 mb-2">{t('common.reviews.title')}</h2>
+        <p className="text-gray-500 font-medium tracking-tight">{t('common.reviews.subtitle', { name: propertyName })}</p>
       </div>
 
       <div className="space-y-10">
         <div className="flex flex-col items-center">
-          <label className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">Rate your experience</label>
+          <label className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{t('common.reviews.rate')}</label>
           <RatingStars 
             rating={rating} 
             max={5} 
@@ -69,11 +71,11 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
         </div>
 
         <div className="space-y-4">
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block ml-2">Share your thoughts</label>
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block ml-2">{t('common.reviews.share')}</label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Tell us about the property, the location, or the host..."
+            placeholder={t('common.reviews.share_placeholder')}
             className="w-full min-h-[200px] p-8 rounded-[2.5rem] bg-gray-50 border-none focus:ring-4 focus:ring-blue-100 transition-all text-gray-900 font-medium placeholder:text-gray-300 resize-none"
           />
         </div>
@@ -89,7 +91,7 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
           disabled={isSubmitting}
           className="w-full py-8 text-lg font-black tracking-widest uppercase rounded-[2rem] shadow-xl shadow-blue-100 active:scale-95 transition-transform"
         >
-          {isSubmitting ? 'Submitting...' : 'Post Review'}
+          {isSubmitting ? t('common.submitting') : t('common.reviews.post')}
         </Button>
       </div>
     </form>

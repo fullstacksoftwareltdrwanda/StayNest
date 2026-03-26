@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Book unique accommodations around the world.",
 };
 
+import { SettingsProvider } from "@/context/SettingsContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-white text-gray-900 antialiased`}>
-        <Navbar />
-        <main>
-          {children}
-        </main>
+        <SettingsProvider>
+          <Navbar />
+          <main>
+            {children}
+          </main>
+        </SettingsProvider>
       </body>
     </html>
   );

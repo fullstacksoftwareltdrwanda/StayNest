@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { AlertCircle, LogIn } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useSettings()
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -26,7 +28,7 @@ export default function LoginPage() {
     const password = formData.get('password') as string
 
     if (!email || !password) {
-      setError('Please fill in all fields.')
+      setError(t('auth.errors.fill_all'))
       setLoading(false)
       return
     }
@@ -36,7 +38,7 @@ export default function LoginPage() {
     if (signInError) {
       setError(
         signInError.message === 'Invalid login credentials'
-          ? 'Incorrect email or password. Please try again.'
+          ? t('auth.errors.invalid_credentials')
           : signInError.message
       )
       setLoading(false)
@@ -61,12 +63,16 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10">
           <blockquote className="text-xl font-bold text-white/90 leading-relaxed mb-4">
-            "The best way to discover a new place is through the eyes of someone who calls it home."
+            "{t('auth.benefits.quote')}"
           </blockquote>
-          <p className="text-blue-200 text-sm font-medium">— The Urugostay team</p>
+          <p className="text-blue-200 text-sm font-medium">— {t('auth.benefits.team')}</p>
         </div>
         <div className="relative z-10 flex gap-8">
-          {[['2.5M+', 'Properties'], ['150+', 'Countries'], ['4.9★', 'Rating']].map(([val, label]) => (
+          {[
+            [t('auth.benefits.properties_val'), t('auth.benefits.properties_label')],
+            [t('auth.benefits.countries_val'), t('auth.benefits.countries_label')],
+            [t('auth.benefits.rating_val'), t('auth.benefits.rating_label')]
+          ].map(([val, label]) => (
             <div key={label}>
               <p className="text-2xl font-black text-white">{val}</p>
               <p className="text-blue-200 text-xs font-bold uppercase tracking-widest">{label}</p>
@@ -82,8 +88,12 @@ export default function LoginPage() {
             <Link href="/" className="text-xl font-black text-blue-600 tracking-tighter lg:hidden block mb-8">
               Urugo<span className="text-gray-900">stay</span>
             </Link>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">Welcome back</h1>
-            <p className="text-gray-500 font-medium">Sign in to your Urugostay account</p>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">
+              {t('auth.login_title')}
+            </h1>
+            <p className="text-gray-500 font-medium">
+              {t('auth.login_subtitle')}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -96,7 +106,7 @@ export default function LoginPage() {
 
             <Input
               name="email"
-              label="Email Address"
+              label={t('auth.email')}
               type="email"
               placeholder="john@example.com"
               required
@@ -106,7 +116,7 @@ export default function LoginPage() {
             <div>
               <Input
                 name="password"
-                label="Password"
+                label={t('auth.password')}
                 type="password"
                 placeholder="••••••••"
                 required
@@ -122,20 +132,20 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <LoadingSpinner size="sm" label="" />
-                  Signing in...
+                  {t('auth.signing_in')}
                 </>
               ) : (
                 <>
                   <LogIn className="w-4 h-4" />
-                  Sign In
+                  {t('auth.sign_in')}
                 </>
               )}
             </Button>
 
             <p className="text-center text-sm text-gray-500 pt-2">
-              Don't have an account?{' '}
+              {t('auth.no_account')}{' '}
               <Link href="/register" className="text-blue-600 font-black hover:underline">
-                Create one
+                {t('auth.create_account')}
               </Link>
             </p>
           </form>

@@ -5,7 +5,7 @@ import { getPropertyReviews } from '@/lib/reviews/getPropertyReviews'
 import { PropertyHeader } from '@/components/properties/PropertyHeader'
 import { PropertyOverview } from '@/components/properties/PropertyOverview'
 import { PropertyRoomList } from '@/components/properties/PropertyRoomList'
-import { ReviewSummary } from '@/components/reviews/review-summary'
+import { PropertyReviewsHeader } from '@/components/properties/PropertyReviewsHeader'
 import { ReviewList } from '@/components/reviews/review-list'
 import { notFound } from 'next/navigation'
 
@@ -46,14 +46,7 @@ export default async function PublicPropertyDetailsPage({
         </div>
 
         <div className="pt-20 border-t border-gray-100">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
-            <div>
-              <h2 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Guest Reviews</h2>
-              <p className="text-gray-500 font-medium">Hear what other guests have to say about their stay.</p>
-            </div>
-            <ReviewSummary average={rating.average} count={rating.count} />
-          </div>
-          
+          <PropertyReviewsHeader average={rating.average} count={rating.count} />
           <ReviewList reviews={reviews} />
         </div>
       </div>

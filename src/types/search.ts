@@ -4,6 +4,9 @@ export interface SearchFilters {
   minPrice?: number;
   maxPrice?: number;
   capacity?: number;
+  checkIn?: string;
+  checkOut?: string;
+  guests?: number;
 }
 
 export interface PropertySearchResult {
@@ -19,4 +22,5 @@ export interface PropertySearchResult {
   capacity: number;
   average_rating: number | null;
   review_count: number;
+  is_favorited?: boolean;
 }

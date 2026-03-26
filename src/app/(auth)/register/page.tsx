@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 import { AlertCircle, CheckCircle, UserPlus } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 export default function RegisterPage() {
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useSettings()
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -28,13 +30,13 @@ export default function RegisterPage() {
     const password = formData.get('password') as string
 
     if (!fullName || !email || !password) {
-      setError('Please fill in all fields.')
+      setError(t('auth.errors.fill_all'))
       setLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long.')
+      setError(t('auth.errors.password_length'))
       setLoading(false)
       return
     }
@@ -48,7 +50,7 @@ export default function RegisterPage() {
     if (signUpError) {
       setError(
         signUpError.message.includes('already registered')
-          ? 'This email is already registered. Try logging in instead.'
+          ? t('auth.errors.email_taken')
           : signUpError.message
       )
       setLoading(false)
@@ -73,7 +75,11 @@ export default function RegisterPage() {
           </Link>
         </div>
         <div className="relative z-10 space-y-6">
-          {['Discover unique stays around the world', 'Book securely with verified hosts', 'Leave reviews and help the community'].map((item, i) => (
+          {[
+            t('auth.benefits.feature_stays'),
+            t('auth.benefits.feature_secure'),
+            t('auth.benefits.feature_reviews')
+          ].map((item, i) => (
             <div key={i} className="flex items-center gap-3">
               <div className="w-8 h-8 bg-blue-500 rounded-xl flex items-center justify-center shrink-0">
                 <CheckCircle className="w-4 h-4 text-white" />
@@ -83,7 +89,11 @@ export default function RegisterPage() {
           ))}
         </div>
         <div className="relative z-10 flex gap-8">
-          {[['Free', 'To join'], ['2.5M+', 'Properties'], ['150+', 'Countries']].map(([val, label]) => (
+          {[
+            [t('auth.benefits.free_val'), t('auth.benefits.free_label')],
+            [t('auth.benefits.properties_val'), t('auth.benefits.properties_label')],
+            [t('auth.benefits.countries_val'), t('auth.benefits.countries_label')]
+          ].map(([val, label]) => (
             <div key={label}>
               <p className="text-2xl font-black text-white">{val}</p>
               <p className="text-blue-200 text-xs font-bold uppercase tracking-widest">{label}</p>
@@ -99,8 +109,12 @@ export default function RegisterPage() {
             <Link href="/" className="text-xl font-black text-blue-600 tracking-tighter lg:hidden block mb-8">
               Urugo<span className="text-gray-900">stay</span>
             </Link>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">Create your account</h1>
-            <p className="text-gray-500 font-medium">Join Urugostay to find your perfect stay</p>
+            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">
+              {t('auth.register_title')}
+            </h1>
+            <p className="text-gray-500 font-medium">
+              {t('auth.register_subtitle')}
+            </p>
           </div>
 
           {success ? (
@@ -108,8 +122,8 @@ export default function RegisterPage() {
               <div className="w-16 h-16 bg-green-50 rounded-3xl flex items-center justify-center text-green-500 border border-green-100">
                 <CheckCircle className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-black text-gray-900">Account created!</h3>
-              <p className="text-gray-500 text-center text-sm">Redirecting you to sign in...</p>
+              <h3 className="text-xl font-black text-gray-900">{t('auth.success.title')}</h3>
+              <p className="text-gray-500 text-center text-sm">{t('auth.success.redirecting')}</p>
               <LoadingSpinner size="sm" label="" />
             </div>
           ) : (
@@ -123,16 +137,16 @@ export default function RegisterPage() {
 
               <Input
                 name="fullName"
-                label="Full Name"
+                label={t('auth.full_name')}
                 type="text"
-                placeholder="John Doe"
+                placeholder={t('auth.full_name_placeholder')}
                 required
                 autoComplete="name"
               />
 
               <Input
                 name="email"
-                label="Email Address"
+                label={t('auth.email')}
                 type="email"
                 placeholder="john@example.com"
                 required
@@ -142,14 +156,16 @@ export default function RegisterPage() {
               <div>
                 <Input
                   name="password"
-                  label="Password"
+                  label={t('auth.password')}
                   type="password"
-                  placeholder="Min. 6 characters"
+                  placeholder={t('auth.password_placeholder')}
                   required
                   minLength={6}
                   autoComplete="new-password"
                 />
-                <p className="text-xs text-gray-400 mt-1.5 ml-1">Must be at least 6 characters</p>
+                <p className="text-xs text-gray-400 mt-1.5 ml-1">
+                  {t('auth.errors.password_length')}
+                </p>
               </div>
 
               <Button
@@ -160,20 +176,20 @@ export default function RegisterPage() {
                 {loading ? (
                   <>
                     <LoadingSpinner size="sm" label="" />
-                    Creating account...
+                    {t('auth.creating_account')}
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-4 h-4" />
-                    Create Account
+                    {t('auth.create_account')}
                   </>
                 )}
               </Button>
 
               <p className="text-center text-sm text-gray-500 pt-2">
-                Already have an account?{' '}
+                {t('auth.have_account')}{' '}
                 <Link href="/login" className="text-blue-600 font-black hover:underline">
-                  Sign in
+                  {t('auth.sign_in')}
                 </Link>
               </p>
             </form>

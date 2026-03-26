@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react'
+import { Upload, X, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
+import { useSettings } from '@/context/SettingsContext'
 
 interface PropertyImageUploadProps {
   onUpload: (url: string) => void
@@ -11,6 +12,7 @@ interface PropertyImageUploadProps {
 }
 
 export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImageUploadProps) {
+  const { t } = useSettings()
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(currentImageUrl || null)
   const supabase = createClient()
@@ -23,7 +25,7 @@ export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImage
 
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file.')
+        alert(t('property_form.image_type_error'))
         return
       }
 
@@ -49,7 +51,7 @@ export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImage
       onUpload(publicUrl)
     } catch (error) {
       console.error('Error uploading image:', error)
-      alert('Error uploading image!')
+      alert(t('property_form.upload_error'))
     } finally {
       setUploading(false)
     }
@@ -62,7 +64,7 @@ export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImage
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-semibold text-gray-700">Property Main Image</label>
+      <label className="block text-sm font-semibold text-gray-700">{t('property_form.main_image_label')}</label>
       
       {preview ? (
         <div className="relative h-64 w-full rounded-2xl overflow-hidden border border-gray-200 group">
@@ -87,15 +89,15 @@ export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImage
             {uploading ? (
               <div className="flex flex-col items-center">
                 <Loader2 className="w-10 h-10 text-blue-600 animate-spin mb-4" />
-                <p className="text-sm font-medium text-gray-600">Uploading your image...</p>
+                <p className="text-sm font-medium text-gray-600">{t('property_form.uploading_image')}</p>
               </div>
             ) : (
               <>
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
                   <Upload className="w-6 h-6 text-blue-600" />
                 </div>
-                <p className="text-sm font-bold text-gray-900 mb-1">Click to upload or drag and drop</p>
-                <p className="text-xs text-gray-500">PNG, JPG or WebP up to 5MB</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">{t('property_form.upload_hint_main')}</p>
+                <p className="text-xs text-gray-500">{t('property_form.upload_hint_sub')}</p>
               </>
             )}
           </div>

@@ -1,6 +1,9 @@
+'use client'
+
 import { cn } from '@/utils/cn'
 import { InboxIcon, SearchX, HomeIcon, CalendarX, BellOff, StarOff } from 'lucide-react'
 import Link from 'next/link'
+import { useSettings } from '@/context/SettingsContext'
 
 type EmptyStateVariant = 'default' | 'search' | 'bookings' | 'properties' | 'notifications' | 'reviews'
 
@@ -14,39 +17,6 @@ interface EmptyStateProps {
   className?: string
 }
 
-const presets: Record<EmptyStateVariant, { icon: React.ElementType; title: string; description: string }> = {
-  default: {
-    icon: InboxIcon,
-    title: 'Nothing here yet',
-    description: 'Content will appear here when available.',
-  },
-  search: {
-    icon: SearchX,
-    title: 'No results found',
-    description: 'Try adjusting your search filters or exploring different dates.',
-  },
-  bookings: {
-    icon: CalendarX,
-    title: 'No bookings yet',
-    description: 'Your upcoming and past reservations will appear here.',
-  },
-  properties: {
-    icon: HomeIcon,
-    title: 'No properties yet',
-    description: 'Add your first property to start accepting guests.',
-  },
-  notifications: {
-    icon: BellOff,
-    title: 'You\'re all caught up!',
-    description: "We'll notify you when something important happens.",
-  },
-  reviews: {
-    icon: StarOff,
-    title: 'No reviews yet',
-    description: 'Reviews from guests will appear here after completed stays.',
-  },
-}
-
 export function EmptyState({
   variant = 'default',
   title,
@@ -56,6 +26,41 @@ export function EmptyState({
   onAction,
   className,
 }: EmptyStateProps) {
+  const { t } = useSettings()
+
+  const presets: Record<EmptyStateVariant, { icon: React.ElementType; title: string; description: string }> = {
+    default: {
+      icon: InboxIcon,
+      title: t('common.empty.default_title'),
+      description: t('common.empty.default_desc'),
+    },
+    search: {
+      icon: SearchX,
+      title: t('common.empty.search_title'),
+      description: t('common.empty.search_desc'),
+    },
+    bookings: {
+      icon: CalendarX,
+      title: t('common.empty.bookings_title'),
+      description: t('common.empty.bookings_desc'),
+    },
+    properties: {
+      icon: HomeIcon,
+      title: t('common.empty.properties_title'),
+      description: t('common.empty.properties_desc'),
+    },
+    notifications: {
+      icon: BellOff,
+      title: t('common.empty.notifications_title'),
+      description: t('common.empty.notifications_desc'),
+    },
+    reviews: {
+      icon: StarOff,
+      title: t('common.empty.reviews_title'),
+      description: t('common.empty.reviews_desc'),
+    },
+  }
+
   const preset = presets[variant]
   const Icon = preset.icon
   const displayTitle = title ?? preset.title

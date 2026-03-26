@@ -1,4 +1,7 @@
+'use client'
+
 import { AlertTriangle, RefreshCw, WifiOff } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 interface ErrorStateProps {
   title?: string
@@ -13,21 +16,23 @@ export function ErrorState({
   onRetry,
   type = 'generic',
 }: ErrorStateProps) {
+  const { t } = useSettings()
+
   const defaults = {
     generic: {
       icon: AlertTriangle,
-      title: 'Something went wrong',
-      message: 'An unexpected error occurred. Please try again.',
+      title: t('common.error.generic_title'),
+      message: t('common.error.generic_message'),
     },
     network: {
       icon: WifiOff,
-      title: 'Connection failed',
-      message: 'Unable to reach the server. Please check your internet connection.',
+      title: t('common.error.network_title'),
+      message: t('common.error.network_message'),
     },
     permission: {
       icon: AlertTriangle,
-      title: 'Access denied',
-      message: 'You do not have permission to view this content.',
+      title: t('common.error.permission_title'),
+      message: t('common.error.permission_message'),
     },
   }
 
@@ -47,7 +52,7 @@ export function ErrorState({
           className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-2xl hover:bg-gray-50 transition-colors shadow-sm"
         >
           <RefreshCw className="w-4 h-4" />
-          Try again
+          {t('common.error.retry')}
         </button>
       )}
     </div>

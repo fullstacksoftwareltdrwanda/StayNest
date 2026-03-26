@@ -10,6 +10,7 @@ export interface Property {
   city: string;
   address: string;
   main_image_url?: string;
+  images?: string[];
   status: PropertyStatus;
   created_at: string;
   updated_at: string;

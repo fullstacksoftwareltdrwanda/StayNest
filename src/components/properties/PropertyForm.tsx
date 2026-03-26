@@ -8,8 +8,9 @@ import { updateProperty } from '@/lib/properties/updateProperty'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { FormContainer } from '@/components/forms/FormContainer'
-import { PropertyImageUpload } from './PropertyImageUpload'
+import { MultiImageUpload } from '@/components/shared/MultiImageUpload'
 import { Loader2 } from 'lucide-react'
+import { useSettings } from '@/context/SettingsContext'
 
 interface PropertyFormProps {
   property?: Property
@@ -17,6 +18,7 @@ interface PropertyFormProps {
 
 export function PropertyForm({ property }: PropertyFormProps) {
   const router = useRouter()
+  const { t } = useSettings()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<CreatePropertyInput>({
     name: property?.name || '',
@@ -26,7 +28,8 @@ export function PropertyForm({ property }: PropertyFormProps) {
     city: property?.city || '',
     address: property?.address || '',
     main_image_url: property?.main_image_url || '',
-  })
+    images: property?.images || [],
+  } as any)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
@@ -34,12 +37,22 @@ export function PropertyForm({ property }: PropertyFormProps) {
     setFormData((prev) => ({ ...prev, [name]: val }))
   }
 
-  const handleImageUpload = (url: string) => {
-    setFormData((prev) => ({ ...prev, main_image_url: url }))
+  const handleImagesUpload = (urls: string[]) => {
+    setFormData((prev: any) => ({ 
+      ...prev, 
+      images: urls,
+      main_image_url: urls.length > 0 ? urls[0] : '' 
+    }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (formData.images && formData.images.length < 5) {
+      alert(t('property_form.min_photos_error', { count: '5' }))
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -52,7 +65,7 @@ export function PropertyForm({ property }: PropertyFormProps) {
       router.refresh()
     } catch (error) {
       console.error('Error saving property:', error)
-      alert('Error saving property. Please try again.')
+      alert(t('property_form.save_error'))
     } finally {
       setLoading(false)
     }
@@ -60,48 +73,51 @@ export function PropertyForm({ property }: PropertyFormProps) {
 
   return (
     <FormContainer 
-      title={property ? 'Edit Property' : 'List Your Property'} 
+      title={property ? t('property_form.edit_title') : t('property_form.list_title')} 
       onSubmit={handleSubmit}
     >
       <div className="space-y-6">
-        <PropertyImageUpload 
-          onUpload={handleImageUpload} 
-          currentImageUrl={formData.main_image_url} 
+        <MultiImageUpload 
+          label={t('property_form.photos_label')}
+          bucket="property-images"
+          initialImages={formData.images}
+          onUpload={handleImagesUpload}
+          minImages={5}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Property Name"
+            label={t('property_form.name_label')}
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="e.g. Grand View Resort"
+            placeholder={t('property_form.name_placeholder')}
             required
           />
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-gray-700">Property Type</label>
+            <label className="text-sm font-semibold text-gray-700">{t('property_form.type_label')}</label>
             <select
               name="type"
               value={formData.type}
               onChange={handleChange}
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 text-sm"
             >
-              <option value="Hotel">Hotel</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Villa">Villa</option>
-              <option value="Resort">Resort</option>
-              <option value="Guesthouse">Guesthouse</option>
+              <option value="Hotel">{t('common.property_types.hotel')}</option>
+              <option value="Apartment">{t('common.property_types.apartment')}</option>
+              <option value="Villa">{t('common.property_types.villa')}</option>
+              <option value="Resort">{t('common.property_types.resort')}</option>
+              <option value="Guesthouse">{t('common.property_types.guesthouse')}</option>
             </select>
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-gray-700">Description</label>
+          <label className="text-sm font-semibold text-gray-700">{t('property_form.description_label')}</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Tell travelers what makes your place special..."
+            placeholder={t('property_form.description_placeholder')}
             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 text-sm h-32 resize-none"
             required
           />
@@ -109,7 +125,7 @@ export function PropertyForm({ property }: PropertyFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Country"
+            label={t('property_form.country_label')}
             name="country"
             value={formData.country}
             onChange={handleChange}
@@ -117,7 +133,7 @@ export function PropertyForm({ property }: PropertyFormProps) {
             required
           />
           <Input
-            label="City"
+            label={t('property_form.city_label')}
             name="city"
             value={formData.city}
             onChange={handleChange}
@@ -127,7 +143,7 @@ export function PropertyForm({ property }: PropertyFormProps) {
         </div>
 
         <Input
-          label="Detailed Address"
+          label={t('property_form.address_label')}
           name="address"
           value={formData.address}
           onChange={handleChange}
@@ -139,10 +155,10 @@ export function PropertyForm({ property }: PropertyFormProps) {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Saving...
+              {t('common.saving')}
             </>
           ) : (
-            property ? 'Update Property' : 'List Property Now'
+            property ? t('property_form.submit_update') : t('property_form.submit_list')
           )}
         </Button>
       </div>
