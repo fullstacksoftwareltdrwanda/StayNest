@@ -32,7 +32,7 @@ export default function HelpPage() {
       ]
     },
     {
-      title: t('help.sections.hosting'),
+      title: t('help.sections.hosting.title'),
       icon: Smartphone,
       items: [
         { q: t('help.sections.hosting.q1'), a: t('help.sections.hosting.a1') },

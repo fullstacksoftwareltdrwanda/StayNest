@@ -113,9 +113,6 @@ export function HeroSearchBar() {
         <div className="flex-1 flex items-center pr-2">
           <button
             onClick={() => setActiveTab('guests')}
-            className={`flex-1 flex flex-col justify-center px-8 py-3 md:py-4 text-left transition-colors ${
-              activeTab === 'guests' ? 'bg-white rounded-full' : 'hover:bg-gray-50 rounded-full'
-            }`}
             className={`flex-1 flex flex-col items-start px-6 md:px-8 py-4 md:py-2 hover:bg-white rounded-[1.8rem] md:rounded-full transition-all text-left group ${activeTab === 'guests' ? 'bg-white shadow-sm' : ''}`}
           >
             <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">{t('home.search.guests')}</span>
