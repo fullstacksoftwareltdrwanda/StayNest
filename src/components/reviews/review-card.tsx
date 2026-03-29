@@ -11,11 +11,11 @@ interface ReviewCardProps {
 
 export function ReviewCard({ review, showProperty = false, showUser = true }: ReviewCardProps) {
   return (
-    <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white p-5 md:p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-center space-x-3">
           {showUser && (
-            <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 bg-[var(--primary)]/10 rounded-full flex items-center justify-center text-[var(--primary)]">
               {review.user?.avatar_url ? (
                 <img 
                   src={review.user.avatar_url} 

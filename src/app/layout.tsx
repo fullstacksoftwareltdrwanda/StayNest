@@ -6,11 +6,14 @@ import Navbar from "@/components/ui/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Urugostay | Find your perfect stay",
-  description: "Book unique accommodations around the world.",
-};
+  title: 'Urugostay | Find Your Nest Anywhere',
+  description: 'Premium short-term rentals and boutique properties.',
+}
+;
 
 import { SettingsProvider } from "@/context/SettingsContext";
+import { MobileNavWrapper } from "@/components/ui/MobileNavWrapper";
+import { NavbarWrapper } from "@/components/ui/NavbarWrapper";
 
 export default function RootLayout({
   children,
@@ -21,10 +24,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-white text-gray-900 antialiased`}>
         <SettingsProvider>
-          <Navbar />
-          <main>
+          <NavbarWrapper>
+            <Navbar />
+          </NavbarWrapper>
+          <MobileNavWrapper>
             {children}
-          </main>
+          </MobileNavWrapper>
         </SettingsProvider>
       </body>
     </html>

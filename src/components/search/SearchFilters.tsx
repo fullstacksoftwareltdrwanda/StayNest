@@ -44,7 +44,7 @@ export function SearchFilters() {
     { label: t('common.property_types.apartment'), value: 'Apartment' },
     { label: t('common.property_types.villa'), value: 'Villa' },
     { label: t('common.property_types.resort'), value: 'Resort' },
-    { label: t('common.property_types.guesthouse'), value: 'Guesthouse' },
+    { label: t('common.property_types.guesthouse'), value: 'Guest House' },
   ]
   
   const capacities = [t('common.any'), '1', '2', '3', '4', '5+']
@@ -53,12 +53,12 @@ export function SearchFilters() {
     <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-8 sticky top-24">
       <div className="flex items-center justify-between">
         <div className="flex items-center font-bold text-gray-900">
-          <Filter className="w-5 h-5 mr-2 text-blue-600" />
+          <Filter className="w-5 h-5 mr-2 text-[var(--primary)]" />
           {t('common.search.filters_title')}
         </div>
         <button 
           onClick={clearFilters}
-          className="text-xs font-bold text-blue-600 hover:text-blue-700 uppercase tracking-widest"
+          className="text-xs font-bold text-[var(--primary)] hover:text-[var(--primary)]/80 uppercase tracking-widest"
         >
           {t('common.clear')}
         </button>
@@ -73,7 +73,7 @@ export function SearchFilters() {
               onClick={() => updateFilters('type', type.value)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                 currentType === type.value 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
+                  ? 'bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary)]/20' 
                   : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
               }`}
             >
@@ -93,7 +93,7 @@ export function SearchFilters() {
               placeholder={t('common.min')}
               value={currentMinPrice}
               onChange={(e) => updateFilters('minPrice', e.target.value)}
-              className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border-none rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border-none rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--primary)]/20"
             />
           </div>
           <div className="relative">
@@ -103,7 +103,7 @@ export function SearchFilters() {
               placeholder={t('common.max')}
               value={currentMaxPrice}
               onChange={(e) => updateFilters('maxPrice', e.target.value)}
-              className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border-none rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="w-full pl-7 pr-3 py-2.5 bg-gray-50 border-none rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--primary)]/20"
             />
           </div>
         </div>

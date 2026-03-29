@@ -52,21 +52,22 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-10 md:p-14 rounded-[4rem] border border-gray-100 shadow-2xl shadow-blue-50/50">
-      <div className="mb-10 text-center">
-        <h2 className="text-3xl font-black tracking-tight text-gray-900 mb-2">{t('common.reviews.title')}</h2>
-        <p className="text-gray-500 font-medium tracking-tight">{t('common.reviews.subtitle', { name: propertyName })}</p>
+    <form onSubmit={handleSubmit} className="bg-white p-8 md:p-14 rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 shadow-2xl shadow-[var(--primary)]/5">
+      <div className="mb-8 md:mb-10 text-center">
+        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900 mb-2">{t('common.reviews.title')}</h2>
+        <p className="text-gray-500 font-medium tracking-tight text-sm md:text-base">{t('common.reviews.subtitle', { name: propertyName })}</p>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-8 md:space-y-10">
         <div className="flex flex-col items-center">
-          <label className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{t('common.reviews.rate')}</label>
+          <label className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-4 md:mb-6">{t('common.reviews.rate')}</label>
           <RatingStars 
             rating={rating} 
             max={5} 
             readonly={false} 
             onChange={setRating} 
-            size={48} 
+            size={40} 
+            className="md:scale-125 md:origin-center"
           />
         </div>
 
@@ -76,7 +77,7 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder={t('common.reviews.share_placeholder')}
-            className="w-full min-h-[200px] p-8 rounded-[2.5rem] bg-gray-50 border-none focus:ring-4 focus:ring-blue-100 transition-all text-gray-900 font-medium placeholder:text-gray-300 resize-none"
+            className="w-full min-h-[160px] md:min-h-[200px] p-6 md:p-8 rounded-3xl md:rounded-[2.5rem] bg-gray-50 border-none focus:ring-4 focus:ring-[var(--primary)]/10 transition-all text-gray-900 font-medium placeholder:text-gray-300 resize-none text-sm md:text-base"
           />
         </div>
 
@@ -89,7 +90,7 @@ export function ReviewForm({ bookingId, propertyId, propertyName }: ReviewFormPr
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full py-8 text-lg font-black tracking-widest uppercase rounded-[2rem] shadow-xl shadow-blue-100 active:scale-95 transition-transform"
+          className="w-full py-6 md:py-8 text-base md:text-lg font-black tracking-widest uppercase rounded-2xl md:rounded-[2rem] shadow-xl shadow-[var(--primary)]/10 active:scale-95 transition-transform bg-[var(--primary)] hover:bg-[var(--primary-dark)]"
         >
           {isSubmitting ? t('common.submitting') : t('common.reviews.post')}
         </Button>

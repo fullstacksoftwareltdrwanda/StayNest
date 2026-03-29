@@ -107,6 +107,7 @@ export default async function PropertyDetailsPage({ params }: { params: Promise<
                 src={property.main_image_url} 
                 alt={property.name} 
                 fill 
+                sizes="(max-width: 1024px) 100vw, 800px"
                 className="object-cover"
               />
             ) : (

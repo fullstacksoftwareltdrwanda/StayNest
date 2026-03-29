@@ -16,7 +16,7 @@ export function HomeFooter() {
               {t('footer.company')}
             </h3>
             <ul className="space-y-2.5 text-sm">
-              <li><Link href="/" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.about_us')}</Link></li>
+              <li><Link href="/about" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.about_us')}</Link></li>
               <li><Link href="/search" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.explore_stays')}</Link></li>
               <li><Link href="/register" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.become_host')}</Link></li>
             </ul>
@@ -29,8 +29,8 @@ export function HomeFooter() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li><Link href="/help" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.help_center')}</Link></li>
-              <li><span className="text-white/70 font-medium cursor-not-allowed opacity-50">{t('footer.safety')}</span></li>
-              <li><span className="text-white/70 font-medium cursor-not-allowed opacity-50">{t('footer.cancellation')}</span></li>
+              <li><Link href="/safety" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.safety')}</Link></li>
+              <li><Link href="/cancellation" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.cancellation')}</Link></li>
             </ul>
           </div>
 
@@ -40,9 +40,9 @@ export function HomeFooter() {
               {t('footer.legal')}
             </h3>
             <ul className="space-y-2.5 text-sm">
-              <li><span className="text-white/70 font-medium cursor-not-allowed opacity-50">{t('footer.privacy')}</span></li>
-              <li><span className="text-white/70 font-medium cursor-not-allowed opacity-50">{t('footer.terms')}</span></li>
-              <li><span className="text-white/70 font-medium cursor-not-allowed opacity-50">{t('footer.cookies')}</span></li>
+              <li><Link href="/privacy" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.privacy')}</Link></li>
+              <li><Link href="/terms" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.terms')}</Link></li>
+              <li><Link href="/cookies" className="text-white/70 hover:text-white transition-colors font-medium">{t('footer.cookies')}</Link></li>
             </ul>
           </div>
 
@@ -59,10 +59,12 @@ export function HomeFooter() {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <span className="text-lg font-black tracking-tighter">
-            Urugo<span className="text-[var(--accent)]">stay</span>
-          </span>
-          <p className="text-xs text-white/40">© 2026 Urugostay. {t('footer.rights')}</p>
+            <Link href="/" className="text-2xl font-black text-white tracking-tight">
+              Urugo<span className="text-[var(--accent)]">stay</span>
+            </Link>
+            <p className="mt-4 text-sm text-gray-500 leading-relaxed max-w-sm">
+              {t('footer.description')}
+            </p>
         </div>
       </div>
     </footer>

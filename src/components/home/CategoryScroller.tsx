@@ -2,19 +2,20 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
-import { Building, Home, Castle, TreePalm, Wallet, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Building, Home, Castle, TreePalm, Wallet, ChevronLeft, ChevronRight, Tent, Trees, Landmark, Warehouse } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
+import { cn } from '@/utils/cn'
 
 export function CategoryScroller() {
   const { t } = useSettings()
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const categories = [
-    { icon: Building, label: t('common.property_types.hotel'), type: 'hotel' },
-    { icon: Home, label: t('common.property_types.apartment'), type: 'apartment' },
-    { icon: Castle, label: t('common.property_types.villa'), type: 'villa' },
-    { icon: TreePalm, label: t('common.property_types.resort'), type: 'resort' },
-    { icon: Wallet, label: t('common.property_types.budget'), type: 'budget' },
+    { icon: Building, label: t('common.property_types.hotel'), type: 'Hotel' },
+    { icon: Home, label: t('common.property_types.apartment'), type: 'Apartment' },
+    { icon: Castle, label: t('common.property_types.villa'), type: 'Villa' },
+    { icon: TreePalm, label: t('common.property_types.resort'), type: 'Resort' },
+    { icon: Warehouse, label: t('common.property_types.guesthouse'), type: 'Guest House' },
   ]
 
   const scroll = (dir: 'left' | 'right') => {
@@ -47,12 +48,12 @@ export function CategoryScroller() {
           <Link
             key={cat.type}
             href={`/search?type=${cat.type}`}
-            className="flex flex-col items-center gap-2 min-w-[90px] px-5 py-4 rounded-2xl border border-transparent hover:border-[var(--warm-gray-dark)] hover:bg-[var(--warm-gray)] transition-all group/cat cursor-pointer shrink-0"
+            className="flex flex-col items-center gap-2 min-w-[80px] sm:min-w-[90px] px-2 sm:px-5 py-3 sm:py-4 rounded-2xl transition-all group/cat cursor-pointer shrink-0"
           >
-            <div className="w-11 h-11 rounded-xl bg-[var(--warm-gray)] flex items-center justify-center group-hover/cat:bg-[var(--primary)] group-hover/cat:text-white transition-all text-[var(--primary)]">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gray-50 flex items-center justify-center group-hover/cat:bg-[var(--primary)] group-hover/cat:text-white transition-all text-gray-500 ring-1 ring-gray-100 group-hover/cat:ring-0">
               <cat.icon className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-gray-600 group-hover/cat:text-[var(--primary)] transition-colors whitespace-nowrap">
+            <span className="text-[10px] sm:text-xs font-bold text-gray-500 group-hover/cat:text-[var(--primary)] transition-colors whitespace-nowrap uppercase tracking-tighter">
               {cat.label}
             </span>
           </Link>

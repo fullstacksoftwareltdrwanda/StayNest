@@ -20,6 +20,7 @@ export function PaymentSummary({ booking }: PaymentSummaryProps) {
             src={property.main_image_url}
             alt={property.name}
             fill
+            sizes="(max-width: 768px) 100vw, 400px"
             className="object-cover"
           />
         ) : (

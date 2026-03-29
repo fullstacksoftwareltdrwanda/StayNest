@@ -33,7 +33,7 @@ export function SearchBar() {
     >
       <div className="bg-white p-2 rounded-2xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2 border border-gray-100">
         <div className="flex-1 flex items-center px-4 w-full">
-          <MapPin className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0" />
+          <MapPin className="w-5 h-5 text-[var(--primary)] mr-3 flex-shrink-0" />
           <input
             type="text"
             placeholder="Where are you going? (e.g. Kigali, Rwanda)"
@@ -46,7 +46,7 @@ export function SearchBar() {
         <div className="w-full md:w-auto p-1">
           <Button 
             type="submit" 
-            className="w-full md:px-10 md:py-4 rounded-xl md:rounded-full h-auto text-lg font-bold shadow-lg shadow-blue-200"
+            className="w-full md:px-10 md:py-4 rounded-xl md:rounded-full h-auto text-lg font-bold shadow-lg shadow-[var(--primary)]/20"
             disabled={isSearching}
           >
             {isSearching ? (

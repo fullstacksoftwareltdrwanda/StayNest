@@ -18,6 +18,8 @@ interface SettingsContextType {
   formatPrice: (amount: number) => string
   exchangeRates: Record<string, number>
   loading: boolean
+  isHostMode: boolean
+  setHostMode: (mode: boolean) => void
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined)
@@ -36,8 +38,20 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<Currency>('USD')
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({ USD: 1 })
   const [loading, setLoading] = useState(true)
+  const [isHostMode, setIsHostModeState] = useState(false)
 
   const supabase = createClient()
+
+  // 0. Load HostMode from local
+  useEffect(() => {
+    const saved = localStorage.getItem('urugostay_host_mode')
+    if (saved === 'true') setIsHostModeState(true)
+  }, [])
+
+  const setHostMode = (mode: boolean) => {
+    setIsHostModeState(mode)
+    localStorage.setItem('urugostay_host_mode', String(mode))
+  }
 
   // 1. Fetch Profile Settings
   useEffect(() => {
@@ -120,7 +134,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       t,
       formatPrice,
       exchangeRates,
-      loading
+      loading,
+      isHostMode,
+      setHostMode
     }}>
       {children}
     </SettingsContext.Provider>

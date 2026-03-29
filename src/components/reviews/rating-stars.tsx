@@ -1,7 +1,8 @@
 'use client'
 
-import { Star } from 'lucide-react'
+import { Star, StarHalf } from 'lucide-react'
 import { useState } from 'react'
+import { cn } from '@/utils/cn'
 
 interface RatingStarsProps {
   rating: number
@@ -9,6 +10,7 @@ interface RatingStarsProps {
   readonly?: boolean
   onChange?: (rating: number) => void
   size?: number
+  className?: string
 }
 
 export function RatingStars({ 
@@ -16,14 +18,15 @@ export function RatingStars({
   max = 5, 
   readonly = true, 
   onChange,
-  size = 20 
+  size = 16,
+  className 
 }: RatingStarsProps) {
   const [hoverRating, setHoverRating] = useState(0)
 
   const stars = Array.from({ length: max }, (_, i) => i + 1)
 
   return (
-    <div className="flex items-center space-x-1">
+    <div className={cn("flex items-center space-x-1", className)}>
       {stars.map((star) => (
         <button
           key={star}

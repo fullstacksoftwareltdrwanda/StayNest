@@ -59,7 +59,7 @@ export default async function SearchPage({
                 </h2>
                 {filters.destination ? (
                   <p className="text-gray-400 text-xs mt-1 font-medium">
-                    Results for <span className="text-blue-600 font-bold">"{filters.destination}"</span>
+                    Results for <span className="text-[var(--primary)] font-bold">"{filters.destination}"</span>
                   </p>
                 ) : (
                   <p className="text-gray-400 text-xs mt-1 font-bold uppercase tracking-widest">All approved properties</p>

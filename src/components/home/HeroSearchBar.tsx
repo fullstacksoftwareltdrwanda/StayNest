@@ -6,6 +6,7 @@ import { Search, MapPin, Calendar, Users, Plus, Minus, X } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
 import { format, addDays, isBefore, startOfToday } from 'date-fns'
 import { motion, AnimatePresence } from 'framer-motion'
+import { cn } from '@/utils/cn'
 
 export function HeroSearchBar() {
   const router = useRouter()
@@ -63,10 +64,32 @@ export function HeroSearchBar() {
 
   return (
     <div ref={searchBarRef} className="relative w-full max-w-4xl mx-auto px-4 sm:px-0">
+      {/* Mobile Search Trigger (Single Pill) */}
+      <div className="md:hidden">
+        <button
+          onClick={() => setActiveTab('where')}
+          className="w-full flex items-center gap-4 bg-white/90 backdrop-blur-md rounded-full px-6 py-4 shadow-xl border border-white/20 text-left transition-all active:scale-[0.98]"
+        >
+          <div className="w-10 h-10 rounded-full bg-[var(--primary)] text-white flex items-center justify-center shrink-0">
+            <Search className="w-5 h-5" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-sm font-black text-gray-900 leading-none mb-1">
+              {t('home.search.where')}
+            </span>
+            <span className="text-xs font-bold text-gray-400 leading-none">
+              {destination || t('home.search.placeholder')}
+            </span>
+          </div>
+        </button>
+      </div>
+
+      {/* Desktop/Tablet Search Bar */}
       <div 
-        className={`bg-white rounded-full shadow-2xl border border-gray-100 flex flex-col md:flex-row items-stretch transition-all duration-300 ${
+        className={cn(
+          "hidden md:flex bg-white rounded-full shadow-2xl border border-gray-100 items-stretch transition-all duration-300",
           activeTab ? 'ring-4 ring-[var(--primary)]/10' : ''
-        }`}
+        )}
       >
         {/* Destination Section */}
         <button
@@ -109,29 +132,30 @@ export function HeroSearchBar() {
 
         <div className="hidden md:block w-px h-8 self-center bg-gray-100" />
 
-        {/* Guests Section */}
-        <div className="flex-1 flex items-center pr-2">
+        <div className="flex-[1.5] flex items-center pr-2">
           <button
             onClick={() => setActiveTab('guests')}
-            className={`flex-1 flex flex-col items-start px-6 md:px-8 py-4 md:py-2 hover:bg-white rounded-[1.8rem] md:rounded-full transition-all text-left group ${activeTab === 'guests' ? 'bg-white shadow-sm' : ''}`}
+            className={cn(
+              "flex-1 flex flex-col items-start px-8 py-2 hover:bg-white rounded-full transition-all text-left group",
+              activeTab === 'guests' ? 'bg-white shadow-sm' : ''
+            )}
           >
-            <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">{t('home.search.guests')}</span>
+            <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-1">{t('home.search.guests')}</span>
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
-              <span className="text-sm font-bold text-gray-900">
+              <Users className="w-4 h-4 text-gray-400 group-hover:text-[var(--accent)] transition-colors" />
+              <span className="text-sm font-bold text-gray-900 truncate max-w-[100px]">
                 {totalGuests} {totalGuests === 1 ? t('property.guest') : t('property.guests')}
               </span>
             </div>
           </button>
 
           {/* Search Button */}
-          <div className="p-4 md:p-0 md:pl-3">
+          <div className="pl-3">
             <button
               onClick={handleSearch}
-              className="w-full md:w-16 h-14 md:h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl md:rounded-full flex items-center justify-center transition-all shadow-xl shadow-blue-500/25 active:scale-[0.98] group"
+              className="w-14 lg:w-16 h-14 lg:h-16 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white rounded-full flex items-center justify-center transition-all shadow-xl shadow-[var(--primary)]/25 active:scale-[0.98] group shrink-0"
             >
-              <Search className="w-6 h-6 group-hover:scale-110 transition-transform hidden md:block" />
-              <span className="md:hidden font-black text-xs uppercase tracking-[0.2em]">{t('home.search.search_btn')}</span>
+              <Search className="w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-110 transition-transform" />
             </button>
           </div>
         </div>

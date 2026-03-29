@@ -24,6 +24,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             src={property.main_image_url}
             alt={property.name}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
@@ -41,7 +42,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
           <h3 className="text-lg font-bold text-gray-900 truncate flex-1 leading-tight mr-2">
             {property.name}
           </h3>
-          <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-medium uppercase tracking-tight">
+          <span className="text-[10px] bg-[var(--primary)]/5 text-[var(--primary)] px-2 py-0.5 rounded font-medium uppercase tracking-tight">
             {property.type}
           </span>
         </div>

@@ -9,14 +9,20 @@ import { cn } from '@/utils/cn'
 import { useSettings } from '@/context/SettingsContext'
 
 interface ScrollNavbarProps {
-  user: { name: string; initial: string; role: string; avatarUrl?: string | null } | null
+  user: { 
+    id: string; 
+    name: string; 
+    initial: string; 
+    role: string; 
+    avatarUrl?: string | null 
+  } | null
   dashboardLink: string
   isHome?: boolean
 }
 
 export function ScrollNavbar({ user, dashboardLink, isHome = false }: ScrollNavbarProps) {
   const [scrolled, setScrolled] = useState(false)
-  const { t } = useSettings()
+  const { t, isHostMode, setHostMode } = useSettings()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -39,14 +45,12 @@ export function ScrollNavbar({ user, dashboardLink, isHome = false }: ScrollNavb
         <div className="flex items-center justify-between h-16">
           
           {/* Logo */}
-          <Link
-            href="/"
-            className={cn(
-              'text-xl font-black tracking-tighter transition-colors shrink-0',
-              transparent ? 'text-white drop-shadow-md' : 'text-[var(--primary)]'
-            )}
-          >
-            Urugo<span className={transparent ? 'text-[var(--accent-light)]' : 'text-[var(--accent-dark)]'}>stay</span>
+          <Link href="/" className="flex items-center space-x-2">
+            <span className={`text-2xl font-black tracking-tight transition-colors duration-300 ${
+              transparent ? 'text-white' : 'text-[var(--primary)]'
+            }`}>
+              Urugo<span className="text-[var(--accent)]">stay</span>
+            </span>
           </Link>
 
           {/* Center search pill (non-home or scrolled) */}
@@ -62,6 +66,37 @@ export function ScrollNavbar({ user, dashboardLink, isHome = false }: ScrollNavb
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                if (!user) {
+                  window.location.href = '/login?redirect=/host/onboarding'
+                } else {
+                  if (isHostMode) {
+                    setHostMode(false)
+                    window.location.href = '/'
+                  } else {
+                    setHostMode(true)
+                    if (user.role === 'owner') {
+                      window.location.href = '/owner/dashboard'
+                    } else {
+                      window.location.href = '/host/onboarding'
+                    }
+                  }
+                }
+              }}
+              className={cn(
+                "hidden md:block px-4 py-2 rounded-full text-sm font-black transition-all",
+                transparent 
+                  ? "text-white hover:bg-white/10" 
+                  : "text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              {isHostMode 
+                ? t('nav.switch_to_guest') 
+                : (user?.role === 'owner' ? t('nav.switch_to_hosting') : t('nav.become_host'))
+              }
+            </button>
+
             {user && !transparent && (
               <div className="hidden sm:block">
                 <NotificationBell />

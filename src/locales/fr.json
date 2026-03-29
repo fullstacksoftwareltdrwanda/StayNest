@@ -12,6 +12,9 @@
     "logout": "Déconnexion",
     "notifications": "Notifications",
     "sign_out": "Se déconnecter",
+    "become_host": "Devenir hôte",
+    "switch_to_hosting": "Passer en mode hôte",
+    "switch_to_guest": "Passer en mode voyageur",
     "open_menu": "Ouvrir le menu"
   },
   "favorites": {
@@ -94,6 +97,9 @@
     "active_bookings": "Réservations actives",
     "total_earnings": "Gains totaux",
     "your_properties": "Vos propriétés",
+    "my_properties": "Mes propriétés",
+    "reservations": "Réservations",
+    "earnings": "Gains",
     "view_all": "Voir tout",
     "recent_bookings": "Réservations récentes",
     "under_review": "propriété est en cours d'examen",
@@ -181,6 +187,8 @@
   "auth": {
     "login_title": "Bon retour",
     "login_subtitle": "Connectez-vous à votre compte Urugostay",
+    "app_name": "Urugostay",
+    "app_tagline": "Trouvez votre nid, partout",
     "register_title": "Créez votre compte",
     "register_subtitle": "Rejoignez Urugostay pour trouver votre séjour parfait",
     "email": "Adresse e-mail",

@@ -10,6 +10,8 @@ import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 import { PropertySearchResult } from '@/types/search'
 import { useSettings } from '@/context/SettingsContext'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 import { HomeHero } from '@/components/home/HomeHero'
 
 interface HomePageClientProps {
@@ -23,6 +25,16 @@ interface HomePageClientProps {
 
 export function HomePageClient({ initialProperties, stats }: HomePageClientProps) {
   const { t } = useSettings()
+  const [user, setUser] = useState<any>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    checkUser()
+  }, [supabase])
 
   // Separate first 4 as "featured" and the rest as regular
   const featured = initialProperties.slice(0, 4)
@@ -60,15 +72,13 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
 
           {initialProperties.length === 0 ? (
             <EmptyState
-              variant="properties"
-              description={t('home.no_results')}
-              actionLabel={t('home.explore')}
-              actionHref="/search"
+              title={t('home.no_results')}
+              description={t('common.search.no_results_desc')}
             />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
               {featured.map((property) => (
-                <HomepagePropertyCard key={property.id} property={property} />
+                <HomepagePropertyCard key={property.id} property={property} featured user={user} />
               ))}
             </div>
           )}
@@ -78,18 +88,18 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
       {/* ─── Explore Rwanda Section ─────────────── */}
       {regular.length > 0 && (
         <section className="bg-[var(--warm-gray)] py-16 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              label={t('home.discover.label')}
-              title={t('home.discover.title')}
-              subtitle={t('home.discover.subtitle')}
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {regular.slice(0, 6).map((property) => (
-                <HomepagePropertyCard key={property.id} property={property} featured />
-              ))}
-            </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 lg:mb-32">
+          <SectionHeader
+            title={t('home.discover.title')}
+            subtitle={t('home.discover.subtitle')}
+            label={t('home.discover.label')}
+          />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+            {regular.map((property) => (
+              <HomepagePropertyCard key={property.id} property={property} user={user} />
+            ))}
           </div>
+        </div>
         </section>
       )}
 

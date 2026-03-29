@@ -5,20 +5,20 @@ export default function Hero() {
   return (
     <section className="relative py-24 md:py-32 overflow-hidden bg-white">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-blue-50 rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-100 rounded-full blur-3xl opacity-30" />
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-[var(--primary)]/5 rounded-full blur-3xl opacity-50" />
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 rounded-full blur-3xl opacity-30" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-8 border border-blue-100/50">
+        <div className="inline-flex items-center space-x-2 bg-[var(--primary)]/5 px-4 py-2 rounded-full mb-8 border border-[var(--primary)]/10">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]"></span>
           </span>
-          <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">New properties added daily</span>
+          <span className="text-xs font-bold text-[var(--primary)] uppercase tracking-widest">New properties added daily</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 mb-8 leading-[1.1]">
-          Find your <span className="text-blue-600">perfect stay</span> <br className="hidden md:block" /> anywhere in the world.
+        <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tight mb-6 leading-[1.1]">
+          Urugo<span className="text-[var(--accent)]">stay</span> <br className="hidden md:block" /> anywhere in the world.
         </h1>
         <p className="max-w-2xl mx-auto text-xl text-gray-500 mb-16 leading-relaxed">
           Discover unique accommodations for every trip, from cozy cabins to luxury resorts. Your next adventure begins here.

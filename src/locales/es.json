@@ -12,6 +12,9 @@
     "logout": "Cerrar sesión",
     "notifications": "Notificaciones",
     "sign_out": "Cerrar sesión",
+    "become_host": "Convertirse en anfitrión",
+    "switch_to_hosting": "Cambiar a modo anfitrión",
+    "switch_to_guest": "Cambiar a modo huésped",
     "open_menu": "Abrir menú"
   },
   "favorites": {
@@ -84,6 +87,9 @@
     "active_bookings": "Reservas activas",
     "total_earnings": "Ganancias totales",
     "your_properties": "Tus propiedades",
+    "my_properties": "Mis propiedades",
+    "reservations": "Reservas",
+    "earnings": "Ganancias",
     "view_all": "Ver todo",
     "recent_bookings": "Reservas recientes",
     "under_review": "propiedad está en revisión",
@@ -130,6 +136,8 @@
     "neighborhood_desc": "Ubicado en el vibrante corazón de {{city}}, este/a {{type}} ofrece fácil acceso a las atracciones locales y experiencias culinarias auténticas.",
     "map_soon": "Integración de mapa próximamente..."
   },
+  "app_name": "Urugostay",
+  "app_tagline": "Encuentra tu nido, en cualquier lugar",
   "home": {
     "hero_title": "Encuentra tu",
     "hero_stay": "estancia perfecta",

@@ -49,7 +49,7 @@ export function StatCard({ label, value, icon, trend, trendUp, className }: Stat
           )}
         </div>
         {icon && (
-          <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+          <div className="w-12 h-12 bg-[var(--primary)]/5 rounded-2xl flex items-center justify-center text-[var(--primary)] shrink-0">
             {icon}
           </div>
         )}

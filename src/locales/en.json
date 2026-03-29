@@ -12,6 +12,9 @@
     "logout": "Log Out",
     "notifications": "Notifications",
     "sign_out": "Sign Out",
+    "become_host": "Become a Host",
+    "switch_to_hosting": "Switch to Hosting",
+    "switch_to_guest": "Switch to Guest Mode",
     "open_menu": "Open menu"
   },
   "favorites": {
@@ -64,6 +67,8 @@
     "leave_review": "Leave a Review",
     "my_bookings_title": "My Bookings",
     "my_bookings_subtitle": "Manage your reservations and travel history at Urugostay.",
+    "app_name": "Urugostay",
+    "app_tagline": "Find your nest away from home",
     "find_stay": "Find a stay",
     "empty_title": "No bookings yet",
     "empty_description": "You haven't made any reservations yet. Start exploring properties to find your next stay!",
@@ -96,6 +101,9 @@
     "active_bookings": "Active Bookings",
     "total_earnings": "Total Earnings",
     "your_properties": "Your Properties",
+    "my_properties": "My Properties",
+    "reservations": "Reservations",
+    "earnings": "Earnings",
     "view_all": "View All",
     "recent_bookings": "Recent Bookings",
     "under_review": "property is currently under review",
@@ -255,8 +263,7 @@
       "villa": "Villa",
       "resort": "Resort",
       "apartment": "Apartment",
-      "guesthouse": "Guesthouse",
-      "budget": "Budget"
+      "guesthouse": "Guest House"
     },
     "user_fallback": "User",
     "guest_fallback": "Guest",
@@ -404,7 +411,7 @@
   "payment": {
     "secure_checkout": "Secure Checkout",
     "terms_title": "Terms & Conditions",
-    "terms_text": "By clicking \"Complete Payment\", you agree to the property's booking conditions and StayNest's customer terms. Your payment information is encrypted and securely processed.",
+    "terms_text": "By clicking \"Complete Payment\", you agree to the property's booking conditions and Urugostay's customer terms. Your payment information is encrypted and securely processed.",
     "processing_securely": "Processing Securely...",
     "complete_payment_btn": "Complete Payment — {{price}}",
     "error_payment": "Payment failed. Please try again.",

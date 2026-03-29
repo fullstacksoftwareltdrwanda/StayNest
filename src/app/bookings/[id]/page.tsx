@@ -10,26 +10,51 @@ import { useSettings } from '@/context/SettingsContext'
 import { use, useEffect, useState } from 'react'
 import { Booking } from '@/types/booking'
 import { FormattedPrice } from '@/components/shared/formatted-price'
+import { cancelBooking } from '@/lib/bookings/cancelBooking'
+import { ConfirmationDialog } from '@/components/shared/confirmation-dialog'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/Button'
 
 export default function BookingDetailsPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const { id } = use(paramsPromise)
   const { t } = useSettings()
   const [booking, setBooking] = useState<Booking | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cancelling, setCancelling] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  const fetchBooking = async () => {
+    try {
+      const data = await getBookingById(id)
+      setBooking(data as any)
+    } catch (error) {
+      console.error('Error fetching booking:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    async function fetchBooking() {
-      try {
-        const data = await getBookingById(id)
-        setBooking(data as any)
-      } catch (error) {
-        console.error('Error fetching booking:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchBooking()
   }, [id])
+
+  const handleCancelClick = async () => {
+    setCancelling(true)
+    try {
+      await cancelBooking(id)
+      toast.success('Booking cancelled successfully')
+      await fetchBooking()
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to cancel booking')
+    } finally {
+      setCancelling(false)
+      setShowConfirm(false)
+    }
+  }
+
+  const isCancellable = booking && ['pending', 'confirmed'].includes(booking.status)
+  // Optionally check if date is in future
+  const isFuture = booking && new Date(booking.check_in) > new Date()
 
   if (loading) return <div className="min-h-screen pt-28 text-center font-bold">Loading...</div>
   if (!booking) notFound()
@@ -118,9 +143,36 @@ export default function BookingDetailsPage({ params: paramsPromise }: { params: 
                 </div>
               </div>
             </div>
+
+            {isCancellable && (
+              <div className="mt-12 pt-12 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">Need to cancel?</h4>
+                  <p className="text-sm text-gray-500">You can cancel this booking until the check-in date.</p>
+                </div>
+                <Button 
+                  onClick={() => setShowConfirm(true)}
+                  className="w-full md:w-auto px-10 py-4 bg-red-50 text-red-600 hover:bg-red-100 border-none shadow-none rounded-2xl font-bold"
+                >
+                  Cancel Booking
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      <ConfirmationDialog
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={handleCancelClick}
+        isLoading={cancelling}
+        title="Cancel Booking?"
+        message="Are you sure you want to cancel this booking? This action cannot be undone and the host will be notified."
+        confirmLabel="Yes, Cancel Booking"
+        cancelLabel="Keep Booking"
+        variant="danger"
+      />
     </div>
   )
 }

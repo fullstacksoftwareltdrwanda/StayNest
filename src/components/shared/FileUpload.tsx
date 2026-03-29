@@ -96,6 +96,7 @@ export function FileUpload({
               src={preview} 
               alt="Preview" 
               fill 
+              sizes="(max-width: 768px) 100vw, 400px"
               className="object-cover"
             />
             {!isUploading && (

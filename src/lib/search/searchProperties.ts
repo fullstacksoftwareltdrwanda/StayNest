@@ -25,7 +25,7 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
   }
 
   if (filters.type && filters.type !== 'All') {
-    query = query.eq('type', filters.type)
+    query = query.ilike('type', filters.type)
   }
 
   const { data, error } = await query

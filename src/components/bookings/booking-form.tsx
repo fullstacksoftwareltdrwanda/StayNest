@@ -72,43 +72,43 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.check_in')}</label>
-          <div className="relative">
-            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
+    <form onSubmit={handleSubmit} className="space-y-10 bg-white p-6 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.check_in')}</label>
+          <div className="relative group">
+            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
             <input
               type="date"
               required
               min={new Date().toISOString().split('T')[0]}
               value={formData.checkIn}
               onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-              className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 font-medium"
+              className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
             />
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.check_out')}</label>
-          <div className="relative">
-            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.check_out')}</label>
+          <div className="relative group">
+            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
             <input
               type="date"
               required
               min={formData.checkIn}
               value={formData.checkOut}
               onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-              className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 font-medium"
+              className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-gray-700 ml-1">{t('confirm.num_guests')}</label>
-        <div className="relative">
-          <UsersIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 z-10" />
+      <div className="space-y-3">
+        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.num_guests')}</label>
+        <div className="relative group">
+          <UsersIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
           <input
             type="number"
             required
@@ -119,23 +119,23 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
               const val = e.target.value === '' ? NaN : parseInt(e.target.value)
               setFormData(prev => ({ ...prev, guests: val }))
             }}
-            className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-900 font-medium"
+            className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
           />
         </div>
-        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2 ml-1">
+        <p className="text-[10px] text-[var(--accent)] font-bold uppercase tracking-[0.1em] mt-3 ml-1">
           {t('confirm.max_capacity')}: {maxCapacity} {t('property.guests')}
         </p>
       </div>
 
-      <div className="pt-6">
+      <div className="pt-8">
         <Button 
           type="submit" 
           disabled={loading || getNightsCount(formData.checkIn, formData.checkOut) <= 0}
-          className="w-full py-8 text-xl rounded-[2rem] shadow-2xl shadow-blue-100 transition-all hover:-translate-y-1 active:scale-[0.98]"
+          className="w-full py-10 text-xl rounded-[2rem] shadow-[0_20px_50px_rgba(27,67,50,0.15)] transition-all hover:shadow-[0_20px_50px_rgba(27,67,50,0.25)] hover:-translate-y-1 active:scale-[0.98] font-black"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+              <Loader2 className="mr-3 h-6 w-6 animate-spin" />
               {t('confirm.processing')}
             </>
           ) : (

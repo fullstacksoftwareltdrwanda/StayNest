@@ -18,32 +18,32 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-[4rem] border border-gray-100 shadow-2xl shadow-blue-50/50 overflow-hidden transform transition-all hover:scale-[1.005]">
-        <div className="bg-blue-600 p-12 text-center text-white relative">
+      <div className="bg-white rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 shadow-2xl shadow-[var(--primary)]/5 overflow-hidden transform transition-all hover:scale-[1.005]">
+        <div className="bg-[var(--primary)] p-8 md:p-12 text-center text-white relative">
           <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
             <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
               <path d="M0 0 L100 0 L100 100 L0 100 Z" fill="url(#grid)" />
               <defs>
                 <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
+                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="var(--primary)" strokeWidth="0.5"/>
                 </pattern>
               </defs>
             </svg>
           </div>
           
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-xl rounded-[2.5rem] mb-8 border border-white/20 animate-in zoom-in duration-500">
-            <CheckCircle2 color="white" size={48} strokeWidth={2.5} />
+          <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white/20 backdrop-blur-xl rounded-2xl md:rounded-[2.5rem] mb-6 md:mb-8 border border-white/20 animate-in zoom-in duration-500">
+            <CheckCircle2 color="white" size={40} strokeWidth={2.5} />
           </div>
-          <h1 className="text-4xl font-black tracking-tight mb-4">{t('payment.success_title')}</h1>
-          <p className="text-blue-100 font-medium text-lg px-8">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-3 md:mb-4">{t('payment.success_title')}</h1>
+          <p className="text-white/70 font-medium text-base md:text-lg px-4 md:px-8 leading-relaxed">
             {t('payment.success_message', { name: property?.name || '' })}
           </p>
         </div>
 
-        <div className="p-10 md:p-14">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+        <div className="p-8 md:p-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 mb-10 md:mb-12">
             <div>
-              <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{t('payment.details_title')}</p>
+              <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-6">{t('payment.details_title')}</p>
               <div className="space-y-6">
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('payment.status_label')}</label>
@@ -58,13 +58,13 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('payment.method_label')}</label>
-                  <span className="text-sm font-black text-gray-900 uppercase tracking-tighter">{payment.method.replace('_', ' ')}</span>
+                  <span className="text-sm font-black uppercase tracking-tighter">{payment.method.replace('_', ' ')}</span>
                 </div>
               </div>
             </div>
 
             <div>
-              <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">{t('payment.booking_context_title')}</p>
+              <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-6">{t('payment.booking_context_title')}</p>
               <div className="space-y-6">
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('payment.check_in_out_label')}</label>
@@ -75,11 +75,11 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('booking.guests')}</label>
-                  <span className="text-sm font-bold text-gray-900">{booking.guests} {booking.guests === 1 ? t('property.guest') : t('property.guests')}</span>
+                  <span className="text-sm font-bold">{booking.guests} {booking.guests === 1 ? t('property.guest') : t('property.guests')}</span>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">{t('payment.amount_paid_label')}</label>
-                  <span className="text-2xl font-black text-blue-600 font-mono">{formatPrice(payment.amount)}</span>
+                  <span className="text-2xl font-black text-[var(--primary)] font-mono">{formatPrice(payment.amount)}</span>
                 </div>
               </div>
             </div>
@@ -87,13 +87,13 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
 
           <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-50">
             <Link href="/bookings" className="flex-1">
-              <div className="w-full py-6 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-black text-sm uppercase tracking-widest rounded-[1.8rem] transition-all flex items-center justify-center gap-2 group border border-gray-100">
+              <div className="w-full py-5 md:py-6 px-4 bg-gray-50 hover:bg-gray-100 text-gray-900 font-black text-xs md:text-sm uppercase tracking-widest rounded-2xl md:rounded-[1.8rem] transition-all flex items-center justify-center gap-2 group border border-gray-100">
                 {t('payment.view_all_btn')}
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </div>
             </Link>
             <Link href="/" className="flex-1">
-              <div className="w-full py-6 px-4 bg-white hover:bg-gray-50 text-blue-600 font-black text-sm uppercase tracking-widest rounded-[1.8rem] transition-all flex items-center justify-center gap-2 group border border-blue-100">
+              <div className="w-full py-5 md:py-6 px-4 bg-white hover:bg-gray-50 text-[var(--primary)] font-black text-xs md:text-sm uppercase tracking-widest rounded-2xl md:rounded-[1.8rem] transition-all flex items-center justify-center gap-2 group border border-[var(--primary)]/10">
                 {t('payment.home_btn')}
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </div>
@@ -103,7 +103,7 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
       </div>
       
       <p className="text-center text-gray-400 text-xs font-medium mt-10">
-        {t('payment.help_text')} <span className="text-blue-600 underline font-bold">support@urugostay.com</span>
+        {t('payment.help_text')} <span className="text-[var(--primary)] underline font-bold">support@urugostay.com</span>
       </p>
     </div>
   )

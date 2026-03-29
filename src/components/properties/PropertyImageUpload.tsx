@@ -68,7 +68,7 @@ export function PropertyImageUpload({ onUpload, currentImageUrl }: PropertyImage
       
       {preview ? (
         <div className="relative h-64 w-full rounded-2xl overflow-hidden border border-gray-200 group">
-          <Image src={preview} alt="Preview" fill className="object-cover" />
+          <Image src={preview} alt="Preview" fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" />
           <button
             onClick={handleRemove}
             className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full text-red-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"

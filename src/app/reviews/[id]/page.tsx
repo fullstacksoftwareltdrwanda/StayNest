@@ -30,7 +30,7 @@ export default async function ReviewDetailsPage({
           Back to my reviews
         </Link>
 
-        <div className="bg-white rounded-[4rem] border border-gray-100 shadow-2xl shadow-blue-50/50 overflow-hidden">
+        <div className="bg-white rounded-[4rem] border border-gray-100 shadow-2xl shadow-[var(--primary)]/10 overflow-hidden">
           <div className="p-10 md:p-14">
             <div className="flex justify-between items-start mb-10">
               <div>
@@ -50,7 +50,7 @@ export default async function ReviewDetailsPage({
 
             {review.property && (
               <div className="border-t border-gray-50 pt-10">
-                <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-6">Property Details</p>
+                <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-6">Property Details</p>
                 <div className="flex items-center space-x-6">
                   <div className="w-24 h-24 bg-gray-100 rounded-[1.8rem] flex items-center justify-center text-gray-400 flex-shrink-0 overflow-hidden shadow-sm">
                     {review.property.main_image_url ? (

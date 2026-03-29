@@ -14,7 +14,7 @@ const statusConfig: Record<string, string> = {
   approved: 'bg-green-50 text-green-700 border-green-200',
   rejected: 'bg-red-50 text-red-700 border-red-200',
   draft: 'bg-gray-100 text-gray-600 border-gray-200',
-  confirmed: 'bg-blue-50 text-blue-700 border-blue-200',
+  confirmed: 'bg-[var(--primary)]/5 text-[var(--primary)] border-[var(--primary)]/20',
   cancelled: 'bg-red-50 text-red-700 border-red-200',
   completed: 'bg-green-50 text-green-700 border-green-200',
   paid: 'bg-green-50 text-green-700 border-green-200',

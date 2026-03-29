@@ -89,6 +89,7 @@ export function MultiImageUpload({
               src={url} 
               alt={`Property ${index + 1}`} 
               fill 
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 200px"
               className="object-cover transition-transform group-hover:scale-110"
             />
             <button 

@@ -31,7 +31,7 @@ export default function UnauthorizedPage() {
 
         <p className="text-xs text-gray-400 mt-8">
           If you believe this is an error, contact{' '}
-          <span className="text-blue-500 font-medium">support@urugostay.com</span>
+          <span className="text-[var(--primary)] font-medium">support@urugostay.com</span>
         </p>
       </div>
     </div>

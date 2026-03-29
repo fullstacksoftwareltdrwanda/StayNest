@@ -24,6 +24,7 @@ export default async function Navbar({ isHome = false }: NavbarProps) {
       user={
         profile
           ? {
+              id: profile.id,
               name: profile.full_name,
               initial: profile.full_name.charAt(0).toUpperCase(),
               role: profile.role,

@@ -2,6 +2,8 @@
 
 import { cn } from '@/utils/cn'
 import { InboxIcon, SearchX, HomeIcon, CalendarX, BellOff, StarOff } from 'lucide-react'
+import { LucideIcon, Home, Calendar, Inbox } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { useSettings } from '@/context/SettingsContext'
 
@@ -68,26 +70,25 @@ export function EmptyState({
 
   return (
     <div className={cn('flex flex-col items-center justify-center py-20 px-6 text-center', className)}>
-      <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-6 text-gray-300 border border-gray-100">
-        <Icon className="w-9 h-9" />
+      <div className="w-24 h-24 bg-[var(--warm-gray)]/30 rounded-[2rem] flex items-center justify-center text-[var(--accent)] mb-8 group-hover:scale-110 transition-transform duration-500">
+        <Icon className="w-10 h-10" />
       </div>
-      <h3 className="text-lg font-black text-gray-900 mb-2">{displayTitle}</h3>
-      <p className="text-sm text-gray-500 max-w-xs leading-relaxed mb-8">{displayDesc}</p>
-      {(actionLabel && actionHref) && (
-        <Link
-          href={actionHref}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-sm font-bold rounded-2xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-100"
-        >
-          {actionLabel}
+      <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">{displayTitle}</h3>
+      <p className="text-gray-400 text-sm font-medium mb-10 max-w-xs">{displayDesc}</p>
+      {actionLabel && actionHref && (
+        <Link href={actionHref}>
+          <Button className="rounded-2xl h-14 px-10 font-black shadow-xl shadow-[var(--primary)]/10 transition-all active:scale-95">
+            {actionLabel}
+          </Button>
         </Link>
       )}
-      {(actionLabel && onAction && !actionHref) && (
-        <button
+      {actionLabel && onAction && !actionHref && (
+        <Button
           onClick={onAction}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white text-sm font-bold rounded-2xl hover:bg-blue-700 transition-colors shadow-sm shadow-blue-100"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white text-sm font-bold rounded-2xl hover:bg-[var(--primary-dark)] transition-colors shadow-sm shadow-[var(--primary)]/10"
         >
           {actionLabel}
-        </button>
+        </Button>
       )}
     </div>
   )
