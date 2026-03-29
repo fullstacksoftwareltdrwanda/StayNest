@@ -77,8 +77,8 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
             />
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-              {featured.map((property) => (
-                <HomepagePropertyCard key={property.id} property={property} featured user={user} />
+              {featured.map((property, i) => (
+                <HomepagePropertyCard key={property.id} property={property} featured user={user} index={i} />
               ))}
             </div>
           )}
@@ -95,8 +95,8 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
             label={t('home.discover.label')}
           />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-            {regular.map((property) => (
-              <HomepagePropertyCard key={property.id} property={property} user={user} />
+            {regular.map((property, i) => (
+              <HomepagePropertyCard key={property.id} property={property} user={user} index={i} />
             ))}
           </div>
         </div>

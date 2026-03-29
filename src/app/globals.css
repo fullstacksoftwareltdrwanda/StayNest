@@ -4,7 +4,7 @@
   --background: #FDFAF6;
   --foreground: #1a1a1a;
 
-  /* Warm African-inspired palette */
+  /* Urugostay Deep Green & Gold Palette */
   --primary: #1B4332;
   --primary-light: #2D6A4F;
   --primary-dark: #0F2E21;
@@ -24,6 +24,23 @@
   --shadow-md: 0 8px 30px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
   --shadow-lg: 0 12px 40px rgba(0,0,0,0.1), 0 6px 16px rgba(0,0,0,0.05);
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Shadcn structural variables mapped to our palette */
+  --card: #FDFAF6;
+  --card-foreground: #1a1a1a;
+  --popover: #FDFAF6;
+  --popover-foreground: #1a1a1a;
+  --primary-foreground: #ffffff;
+  --secondary: #F5F0EA;
+  --secondary-foreground: #1B4332;
+  --muted: #F5F0EA;
+  --muted-foreground: #9ca3af;
+  --accent-foreground: #1a1a1a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #E8E0D4;
+  --input: #E8E0D4;
+  --ring: #D4A853;
 }
 
 @theme inline {
@@ -31,6 +48,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Map Shadcn classes to our theme variables */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 * { box-sizing: border-box; }
@@ -56,13 +90,13 @@ body {
   border-radius: 4px;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--warm-gray); }
-::-webkit-scrollbar-thumb { background: var(--warm-gray-dark); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #c4b9a8; }
+/* Scrollbar - Branded */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 99px; opacity: 0.3; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* Animations */
+/* ─── BASE ANIMATIONS ─────────────────── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -83,6 +117,74 @@ body {
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(27, 67, 50, 0.2); }
+  50% { box-shadow: 0 0 20px 6px rgba(27, 67, 50, 0.1); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ─── URUGOSTAY BRANDED LOADER ─────── */
+@keyframes nest-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes nest-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+}
+
+@keyframes nest-orbit {
+  0% { transform: rotate(0deg) translateX(16px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(16px) rotate(-360deg); }
+}
+
+@keyframes nest-orbit-reverse {
+  0% { transform: rotate(0deg) translateX(22px) rotate(0deg); }
+  100% { transform: rotate(-360deg) translateX(22px) rotate(360deg); }
+}
+
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-5deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.05); }
+}
+
+@keyframes gold-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ─── CARD ANIMATIONS ─────────────────── */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes card-hover-glow {
+  0% { box-shadow: 0 4px 15px rgba(27, 67, 50, 0); }
+  100% { box-shadow: 0 8px 30px rgba(27, 67, 50, 0.12); }
+}
+
+/* ─── UTILITY CLASSES ──────────────────── */
 .animate-shimmer {
   background: linear-gradient(90deg, var(--warm-gray) 25%, var(--warm-gray-dark) 50%, var(--warm-gray) 75%);
   background-size: 200% 100%;
@@ -99,6 +201,35 @@ body {
 
 .animate-scale-in {
   animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-card-enter {
+  animation: card-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-gold-shimmer {
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent-light), var(--accent), var(--accent-light), var(--accent-dark));
+  background-size: 200% auto;
+  animation: gold-shimmer 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Skeleton */
@@ -118,4 +249,26 @@ main {
 ::selection {
   background: var(--accent-light);
   color: var(--primary-dark);
+}
+
+/* ─── GLASSMORPHISM HELPERS ────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(15, 46, 33, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ─── MOBILE SAFE AREAS ────────────── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

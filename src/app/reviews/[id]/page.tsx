@@ -20,7 +20,7 @@ export default async function ReviewDetailsPage({
   }
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-32 pb-20">
+    <div className="bg-gray-50/50 min-h-screen pt-8 pb-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link 
           href="/reviews" 

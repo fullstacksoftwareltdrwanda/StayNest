@@ -39,7 +39,7 @@ export default async function PaymentPage({ params }: { params: Promise<{ bookin
   }
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pt-32 pb-24">
+    <div className="bg-gray-50/30 min-h-screen pt-8 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-16">
           <div className="flex-1 lg:max-w-[65%]">

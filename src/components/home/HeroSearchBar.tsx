@@ -2,28 +2,25 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
-import { Search, MapPin, Calendar, Users, Plus, Minus, X } from 'lucide-react'
+import { Search, MapPin, Calendar, Users, Plus, Minus, X, ChevronRight } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
 import { format, addDays, isBefore, startOfToday } from 'date-fns'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/utils/cn'
+import { Calendar as CalendarUI } from '@/components/ui/calendar'
 
 export function HeroSearchBar() {
   const router = useRouter()
   const { t } = useSettings()
   
-  // State
   const [destination, setDestination] = useState('')
   const [startDate, setStartDate] = useState<Date | null>(null)
   const [endDate, setEndDate] = useState<Date | null>(null)
   const [guests, setGuests] = useState({ adults: 2, children: 0, infants: 0 })
-  
-  // Popover State
   const [activeTab, setActiveTab] = useState<'where' | 'dates' | 'guests' | null>(null)
   
   const searchBarRef = useRef<HTMLDivElement>(null)
 
-  // Close popovers on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
@@ -54,51 +51,46 @@ export function HeroSearchBar() {
     }))
   }
 
-  const guestCountText = () => {
-    const total = guests.adults + guests.children
-    if (total === 0) return t('home.search.add_guests')
-    return `${total} ${total === 1 ? t('property.guest') : t('property.guests')}${guests.infants > 0 ? `, ${guests.infants} infants` : ''}`
-  }
-
   const totalGuests = guests.adults + guests.children
 
   return (
-    <div ref={searchBarRef} className="relative w-full max-w-4xl mx-auto px-4 sm:px-0">
-      {/* Mobile Search Trigger (Single Pill) */}
+    <div ref={searchBarRef} className="relative w-full max-w-4xl mx-auto px-2 sm:px-0">
+      {/* ─── Mobile Search Trigger ─── */}
       <div className="md:hidden">
         <button
           onClick={() => setActiveTab('where')}
-          className="w-full flex items-center gap-4 bg-white/90 backdrop-blur-md rounded-full px-6 py-4 shadow-xl border border-white/20 text-left transition-all active:scale-[0.98]"
+          className="w-full flex items-center gap-3 bg-white/90 backdrop-blur-xl rounded-2xl px-4 py-3 shadow-lg border border-white/30 text-left transition-all active:scale-[0.98]"
         >
-          <div className="w-10 h-10 rounded-full bg-[var(--primary)] text-white flex items-center justify-center shrink-0">
-            <Search className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center shrink-0 shadow-md shadow-[var(--primary)]/20">
+            <Search className="w-4 h-4" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-black text-gray-900 leading-none mb-1">
-              {t('home.search.where')}
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-black text-gray-900 leading-none mb-0.5 truncate">
+              {destination || t('home.search.where')}
             </span>
-            <span className="text-xs font-bold text-gray-400 leading-none">
-              {destination || t('home.search.placeholder')}
+            <span className="text-[10px] font-bold text-gray-400 leading-none truncate">
+              {startDate ? `${format(startDate, 'MMM d')}` : t('home.search.add_dates')} · {totalGuests} {t('property.guests')}
             </span>
           </div>
         </button>
       </div>
 
-      {/* Desktop/Tablet Search Bar */}
+      {/* ─── Desktop/Tablet Search Bar ─── */}
       <div 
         className={cn(
-          "hidden md:flex bg-white rounded-full shadow-2xl border border-gray-100 items-stretch transition-all duration-300",
-          activeTab ? 'ring-4 ring-[var(--primary)]/10' : ''
+          "hidden md:flex bg-white/90 backdrop-blur-xl rounded-full shadow-2xl shadow-black/[0.08] border border-white/40 items-stretch transition-all duration-500",
+          activeTab ? 'ring-2 ring-[var(--accent)]/30 shadow-[var(--accent)]/10' : ''
         )}
       >
-        {/* Destination Section */}
+        {/* Destination */}
         <button
           onClick={() => setActiveTab('where')}
-          className={`group flex-1 flex flex-col justify-center px-8 py-3 md:py-4 text-left rounded-full transition-colors ${
-            activeTab === 'where' ? 'bg-white' : 'hover:bg-gray-50'
-          }`}
+          className={cn(
+            "group flex-1 flex flex-col justify-center px-6 lg:px-8 py-3 text-left rounded-l-full transition-all",
+            activeTab === 'where' ? 'bg-[var(--primary)]/[0.03]' : 'hover:bg-gray-50/50'
+          )}
         >
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-[var(--primary)] transition-colors">
+          <span className="text-[9px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-0.5">
             {t('home.search.where')}
           </span>
           <input
@@ -107,207 +99,222 @@ export function HeroSearchBar() {
             onChange={(e) => setDestination(e.target.value)}
             placeholder={t('home.search.placeholder')}
             className="w-full text-sm font-bold text-gray-900 bg-transparent outline-none placeholder:text-gray-300 pointer-events-none md:pointer-events-auto"
-            onClick={(e) => {
-              if (window.innerWidth >= 768) e.stopPropagation()
-            }}
+            onClick={(e) => { if (window.innerWidth >= 768) e.stopPropagation() }}
           />
         </button>
 
-        <div className="hidden md:block w-px h-8 self-center bg-gray-100" />
+        <div className="w-px h-8 self-center bg-[var(--primary)]/5 shrink-0" />
 
-        {/* Dates Section */}
+        {/* Dates */}
         <button
           onClick={() => setActiveTab('dates')}
-          className={`flex-1 flex flex-col justify-center px-8 py-3 md:py-4 text-left transition-colors ${
-            activeTab === 'dates' ? 'bg-white rounded-full' : 'hover:bg-gray-50'
-          }`}
+          className={cn(
+            "flex-1 flex flex-col justify-center px-6 lg:px-8 py-3 text-left transition-all",
+            activeTab === 'dates' ? 'bg-[var(--primary)]/[0.03]' : 'hover:bg-gray-50/50'
+          )}
         >
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">
+          <span className="text-[9px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-0.5">
             {t('home.search.check_in')} / {t('home.search.check_out')}
           </span>
           <span className={`text-sm font-bold truncate ${startDate ? 'text-gray-900' : 'text-gray-300'}`}>
-            {startDate ? `${format(startDate, 'MMM d')} - ${endDate ? format(endDate, 'MMM d') : 'Add date'}` : t('home.search.add_dates')}
+            {startDate ? `${format(startDate, 'MMM d')} – ${endDate ? format(endDate, 'MMM d') : '...'}` : t('home.search.add_dates')}
           </span>
         </button>
 
-        <div className="hidden md:block w-px h-8 self-center bg-gray-100" />
+        <div className="w-px h-8 self-center bg-[var(--primary)]/5 shrink-0" />
 
-        <div className="flex-[1.5] flex items-center pr-2">
+        {/* Guests + Search Button */}
+        <div className="flex-[1.2] flex items-center pr-1.5">
           <button
             onClick={() => setActiveTab('guests')}
             className={cn(
-              "flex-1 flex flex-col items-start px-8 py-2 hover:bg-white rounded-full transition-all text-left group",
-              activeTab === 'guests' ? 'bg-white shadow-sm' : ''
+              "flex-1 flex flex-col items-start px-6 lg:px-8 py-3 transition-all text-left group rounded-none",
+              activeTab === 'guests' ? 'bg-[var(--primary)]/[0.03]' : 'hover:bg-gray-50/50'
             )}
           >
-            <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-1">{t('home.search.guests')}</span>
+            <span className="text-[9px] font-black text-[var(--primary)] uppercase tracking-[0.2em] mb-0.5">{t('home.search.guests')}</span>
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-gray-400 group-hover:text-[var(--accent)] transition-colors" />
-              <span className="text-sm font-bold text-gray-900 truncate max-w-[100px]">
+              <Users className="w-3.5 h-3.5 text-[var(--accent)] group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-bold text-gray-900 truncate">
                 {totalGuests} {totalGuests === 1 ? t('property.guest') : t('property.guests')}
               </span>
             </div>
           </button>
 
-          {/* Search Button */}
-          <div className="pl-3">
-            <button
-              onClick={handleSearch}
-              className="w-14 lg:w-16 h-14 lg:h-16 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white rounded-full flex items-center justify-center transition-all shadow-xl shadow-[var(--primary)]/25 active:scale-[0.98] group shrink-0"
-            >
-              <Search className="w-5 h-5 lg:w-6 lg:h-6 group-hover:scale-110 transition-transform" />
-            </button>
-          </div>
+          <button
+            onClick={handleSearch}
+            className="w-12 h-12 lg:w-14 lg:h-14 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white rounded-full flex items-center justify-center transition-all shadow-lg shadow-[var(--primary)]/30 active:scale-95 group shrink-0 hover:shadow-xl"
+          >
+            <Search className="w-4 h-4 lg:w-5 lg:h-5 group-hover:scale-110 transition-transform" />
+          </button>
         </div>
       </div>
 
-      {/* Popovers */}
+      {/* ─── Popovers ─── */}
       <AnimatePresence>
         {activeTab && (
           <>
-            {/* Backdrop for mobile focus */}
+            {/* Mobile backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveTab(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] md:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] md:hidden"
             />
             
             <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              initial={{ opacity: 0, y: 10, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className="absolute md:top-full left-0 right-0 bottom-0 md:bottom-auto md:mt-4 z-[70] p-4 md:p-0 pointer-events-none"
+              exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className={cn(
+                "z-[70] pointer-events-none",
+                /* Mobile: fixed bottom sheet */
+                "fixed bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto",
+                /* Desktop: absolute dropdown */
+                "md:absolute md:top-full md:mt-3 md:w-full"
+              )}
             >
-              <div className="bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-2xl border border-gray-100 p-6 md:p-10 max-w-2xl mx-auto overflow-hidden pointer-events-auto w-full md:w-auto">
-                <div className="flex items-center justify-between mb-8 md:mb-10">
+              <div className={cn(
+                "bg-white/95 backdrop-blur-2xl shadow-2xl border border-white/40 overflow-hidden pointer-events-auto w-full",
+                /* Mobile: bottom sheet with top radius only */
+                "rounded-t-[2rem] max-h-[70vh] overflow-y-auto",
+                /* Desktop: full radius */
+                "md:rounded-3xl md:max-h-none md:max-w-2xl md:mx-auto"
+              )}>
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 sm:px-8 pt-5 sm:pt-8 pb-4 sm:pb-6">
                   <div>
-                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">
+                    <p className="text-[9px] font-black text-[var(--accent)] uppercase tracking-[0.25em] mb-1">
                       {activeTab === 'where' && 'Destination'}
                       {activeTab === 'dates' && 'Timeline'}
                       {activeTab === 'guests' && 'Travelers'}
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
                       {activeTab === 'where' && t('home.search.where')}
                       {activeTab === 'dates' && 'Select Dates'}
                       {activeTab === 'guests' && t('home.search.guests')}
                     </h3>
                   </div>
-                  <button onClick={() => setActiveTab(null)} className="p-3 hover:bg-gray-100 rounded-2xl transition-colors">
-                    <X className="w-6 h-6 text-gray-400" />
+                  <button onClick={() => setActiveTab(null)} className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors">
+                    <X className="w-5 h-5 text-gray-400" />
                   </button>
                 </div>
 
-                {/* Where Popover */}
-                {activeTab === 'where' && (
-                  <div className="space-y-4">
-                    <p className="text-sm text-gray-500 font-medium italic">Popular destinations in Rwanda</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {['Kigali', 'Musanze', 'Gisenyi', 'Butare'].map((city) => (
-                        <button
-                          key={city}
-                          onClick={() => {
-                            setDestination(city)
-                            setActiveTab('dates')
-                          }}
-                          className="flex items-center gap-3 p-3 md:p-4 rounded-xl border border-gray-100 hover:border-[var(--primary)] hover:bg-[var(--primary)]/[0.02] transition-all text-left group"
-                        >
-                          <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-gray-50 flex items-center justify-center group-hover:bg-[var(--primary)]/10 transition-colors">
-                            <MapPin className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-[var(--primary)]" />
-                          </div>
-                          <span className="font-bold text-gray-900 text-sm md:text-base">{city}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Dates Popover */}
-                {activeTab === 'dates' && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                       <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('home.search.check_in')}</label>
-                          <input 
-                            type="date" 
-                            min={format(startOfToday(), 'yyyy-MM-dd')}
-                            className="w-full p-4 rounded-xl border border-gray-100 focus:border-[var(--primary)] outline-none font-bold text-gray-900 bg-gray-50/50"
-                            value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
-                            onChange={(e) => {
-                               const date = e.target.value ? new Date(e.target.value) : null
-                               setStartDate(date)
-                               if (date && endDate && isBefore(endDate, date)) {
-                                 setEndDate(addDays(date, 1))
-                               }
-                            }}
-                          />
-                       </div>
-                       <div className="space-y-2">
-                          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('home.search.check_out')}</label>
-                          <input 
-                            type="date" 
-                            min={startDate ? format(addDays(startDate, 1), 'yyyy-MM-dd') : format(addDays(startOfToday(), 1), 'yyyy-MM-dd')}
-                            className="w-full p-4 rounded-xl border border-gray-100 focus:border-[var(--primary)] outline-none font-bold text-gray-900 bg-gray-50/50"
-                            value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
-                            onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
-                          />
-                       </div>
-                    </div>
-                    <div className="flex justify-end pt-2">
-                      <button 
-                        onClick={() => setActiveTab('guests')}
-                        className="px-6 py-3 bg-gray-900 text-white rounded-full font-bold hover:bg-black transition-colors text-sm"
-                      >
-                        Next: Add Guests
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Guests Popover */}
-                {activeTab === 'guests' && (
-                  <div className="space-y-5 md:space-y-6">
-                    {[
-                      { key: 'adults', label: 'Adults', sub: 'Ages 13 or above' },
-                      { key: 'children', label: 'Children', sub: 'Ages 2–12' },
-                      { key: 'infants', label: 'Infants', sub: 'Under 2' },
-                    ].map(({ key, label, sub }) => (
-                      <div key={key} className="flex items-center justify-between pb-5 border-b border-gray-50 last:border-0 last:pb-0">
-                        <div>
-                          <p className="font-bold text-gray-900 text-sm md:text-base">{label}</p>
-                          <p className="text-[10px] md:text-xs text-gray-400 font-medium">{sub}</p>
-                        </div>
-                        <div className="flex items-center gap-3 md:gap-4">
-                          <button
-                            onClick={() => updateGuest(key as any, -1)}
-                            className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-gray-200 flex items-center justify-center hover:border-gray-900 hover:bg-gray-50 transition-all text-gray-400 hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent"
-                            disabled={guests[key as keyof typeof guests] <= (key === 'adults' ? 1 : 0)}
-                          >
-                            <Minus className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                          </button>
-                          <span className="w-5 text-center font-black text-gray-900 tabular-nums text-sm md:text-base">
-                            {guests[key as keyof typeof guests]}
-                          </span>
-                          <button
-                            onClick={() => updateGuest(key as any, 1)}
-                            className="w-9 h-9 md:w-10 md:h-10 rounded-full border border-gray-200 flex items-center justify-center hover:border-gray-900 hover:bg-gray-50 transition-all text-gray-400 hover:text-gray-900"
-                          >
-                            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                          </button>
-                        </div>
+                <div className="px-5 sm:px-8 pb-5 sm:pb-8">
+                  {/* Where */}
+                  {activeTab === 'where' && (
+                    <div className="space-y-3">
+                      <div className="relative mb-4">
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--accent)]" />
+                        <input
+                          type="text"
+                          value={destination}
+                          onChange={(e) => setDestination(e.target.value)}
+                          placeholder={t('home.search.placeholder')}
+                          autoFocus
+                          className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-[var(--primary)]/10 bg-[var(--warm-white)] text-sm font-bold text-gray-900 outline-none focus:border-[var(--primary)]/30 focus:ring-2 focus:ring-[var(--primary)]/5 transition-all placeholder:text-gray-300"
+                        />
                       </div>
-                    ))}
-                    <div className="pt-4 flex justify-end">
-                      <button 
-                        onClick={() => handleSearch()}
-                        className="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-[var(--primary)] text-white rounded-full font-black hover:bg-[var(--primary-light)] shadow-lg shadow-[var(--primary)]/20 transition-all text-sm uppercase tracking-widest"
-                      >
-                        {t('home.search.search_btn')}
-                      </button>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2">Popular</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['Kigali', 'Musanze', 'Gisenyi', 'Butare'].map((city) => (
+                          <button
+                            key={city}
+                            onClick={() => { setDestination(city); setActiveTab('dates') }}
+                            className="flex items-center gap-2.5 p-3 rounded-2xl border border-[var(--primary)]/5 hover:border-[var(--primary)]/20 hover:bg-[var(--primary)]/[0.02] transition-all text-left group"
+                          >
+                            <div className="w-8 h-8 rounded-xl bg-[var(--primary)]/5 flex items-center justify-center group-hover:bg-[var(--primary)]/10 transition-colors shrink-0">
+                              <MapPin className="w-3.5 h-3.5 text-[var(--primary)]" />
+                            </div>
+                            <span className="font-bold text-gray-900 text-sm">{city}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  {/* Dates */}
+                  {activeTab === 'dates' && (
+                    <div className="space-y-4">
+                      <div className="flex justify-center bg-white rounded-2xl border border-gray-100 p-2 shadow-sm">
+                        <CalendarUI
+                          mode="range"
+                          selected={{
+                            from: startDate || undefined,
+                            to: endDate || undefined,
+                          }}
+                          onSelect={(range) => {
+                            setStartDate(range?.from || null)
+                            setEndDate(range?.to || null)
+                          }}
+                          numberOfMonths={window.innerWidth >= 768 ? 2 : 1}
+                          disabled={(date) => date < startOfToday()}
+                          className="w-full max-w-full"
+                        />
+                      </div>
+                      <div className="flex justify-between items-center pt-2">
+                        <div className="text-xs font-bold text-[var(--primary)] flex gap-4">
+                          <span>In: {startDate ? format(startDate, 'MMM d, yyyy') : '--'}</span>
+                          <span>Out: {endDate ? format(endDate, 'MMM d, yyyy') : '--'}</span>
+                        </div>
+                        <button 
+                          onClick={() => setActiveTab('guests')}
+                          className="flex items-center gap-2 px-5 py-2.5 bg-[var(--primary)] text-white rounded-full font-bold hover:bg-[var(--primary-dark)] transition-all text-xs shadow-md shadow-[var(--primary)]/20 active:scale-95"
+                          disabled={!startDate}
+                        >
+                          Next <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Guests */}
+                  {activeTab === 'guests' && (
+                    <div className="space-y-4">
+                      {[
+                        { key: 'adults', label: 'Adults', sub: 'Ages 13+' },
+                        { key: 'children', label: 'Children', sub: 'Ages 2–12' },
+                        { key: 'infants', label: 'Infants', sub: 'Under 2' },
+                      ].map(({ key, label, sub }) => (
+                        <div key={key} className="flex items-center justify-between py-3 border-b border-[var(--primary)]/5 last:border-0">
+                          <div>
+                            <p className="font-bold text-gray-900 text-sm">{label}</p>
+                            <p className="text-[10px] text-gray-400 font-medium">{sub}</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => updateGuest(key as any, -1)}
+                              className="w-8 h-8 rounded-full border border-[var(--primary)]/15 flex items-center justify-center hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all text-gray-400 hover:text-[var(--primary)] disabled:opacity-30 active:scale-90"
+                              disabled={guests[key as keyof typeof guests] <= (key === 'adults' ? 1 : 0)}
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-5 text-center font-black text-gray-900 tabular-nums text-sm">
+                              {guests[key as keyof typeof guests]}
+                            </span>
+                            <button
+                              onClick={() => updateGuest(key as any, 1)}
+                              className="w-8 h-8 rounded-full border border-[var(--primary)]/15 flex items-center justify-center hover:border-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all text-gray-400 hover:text-[var(--primary)] active:scale-90"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="pt-2">
+                        <button 
+                          onClick={() => handleSearch()}
+                          className="w-full px-6 py-3.5 bg-[var(--primary)] text-white rounded-2xl font-black hover:bg-[var(--primary-dark)] shadow-lg shadow-[var(--primary)]/20 transition-all text-sm uppercase tracking-widest active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                          <Search className="w-4 h-4" />
+                          {t('home.search.search_btn')}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </>

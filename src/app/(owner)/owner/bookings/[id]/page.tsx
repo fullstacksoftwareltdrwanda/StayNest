@@ -33,7 +33,7 @@ export default async function OwnerBookingDetailsPage({
   }
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-32 pb-20">
+    <div className="bg-gray-50/50 min-h-screen pt-8 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link href="/owner/bookings" className="inline-flex items-center text-sm font-black text-gray-400 hover:text-[var(--primary)] mb-8 transition-colors uppercase tracking-widest">
           <ArrowLeft className="w-4 h-4 mr-2" />

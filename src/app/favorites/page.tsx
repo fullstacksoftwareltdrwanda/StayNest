@@ -27,10 +27,10 @@ export default function FavoritesPage() {
     fetchFavorites()
   }, [])
 
-  if (loading) return <div className="min-h-screen pt-28 text-center font-bold">Loading...</div>
+  if (loading) return <div className="min-h-screen pt-8 text-center font-bold">Loading...</div>
 
   return (
-    <div className="bg-[var(--warm-white)] min-h-screen pt-28 pb-20">
+    <div className="bg-[var(--warm-white)] min-h-screen pt-8 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <PageHeader
           title={t('favorites.title')}

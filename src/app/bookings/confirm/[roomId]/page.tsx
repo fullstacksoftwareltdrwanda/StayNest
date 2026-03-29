@@ -31,13 +31,13 @@ export default function BookingConfirmPage({ params: paramsPromise }: { params: 
     fetchData()
   }, [params.roomId])
 
-  if (loading) return <div className="min-h-screen pt-24 text-center font-bold">Loading...</div>
+  if (loading) return <div className="min-h-screen pt-8 text-center font-bold">Loading...</div>
   if (!data) notFound()
 
   const { room, property } = data
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-24 pb-20">
+    <div className="bg-gray-50/50 min-h-screen pt-8 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-10">
           <div className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4">

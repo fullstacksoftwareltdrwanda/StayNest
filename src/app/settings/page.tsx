@@ -16,7 +16,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="bg-[var(--warm-white)] min-h-screen pt-28 pb-20">
+    <div className="bg-[var(--warm-white)] min-h-screen pt-6 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <PageHeader 
           title="Account Settings" 

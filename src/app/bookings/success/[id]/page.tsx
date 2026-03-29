@@ -14,7 +14,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-20">
+    <div className="min-h-screen bg-white pt-8 pb-20">
       <div className="max-w-3xl mx-auto px-4 text-center">
         <div className="w-20 h-20 md:w-24 md:h-24 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 animate-bounce">
           <CheckCircle2 className="w-10 h-10 md:w-12 md:h-12 text-[var(--primary)]" />

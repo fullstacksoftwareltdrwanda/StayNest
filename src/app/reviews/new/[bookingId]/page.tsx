@@ -19,7 +19,7 @@ export default async function NewReviewPage({
        redirect('/reviews')
     }
     return (
-      <div className="min-h-screen pt-32 pb-20 flex items-center justify-center px-4">
+      <div className="min-h-screen pt-8 pb-20 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center bg-white p-12 rounded-[3rem] border border-gray-100 shadow-xl">
            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,7 +37,7 @@ export default async function NewReviewPage({
   }
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-24 pb-20">
+    <div className="bg-gray-50/50 min-h-screen pt-8 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-12">
             <div className="lg:col-span-1">

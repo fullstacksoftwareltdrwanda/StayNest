@@ -27,10 +27,10 @@ export default function MyBookingsPage() {
     fetchBookings()
   }, [])
 
-  if (loading) return <div className="min-h-screen pt-28 text-center font-bold">Loading...</div>
+  if (loading) return <div className="min-h-screen pt-8 text-center font-bold">Loading...</div>
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pt-28 pb-20">
+    <div className="bg-gray-50/30 min-h-screen pt-8 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <PageHeader
           title={t('booking.my_bookings_title')}

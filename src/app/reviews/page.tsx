@@ -9,7 +9,7 @@ export default async function MyReviewsPage() {
   const reviews = await getUserReviews()
 
   return (
-    <div className="bg-gray-50/30 min-h-screen pt-28 pb-20">
+    <div className="bg-gray-50/30 min-h-screen pt-8 pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <PageHeader
           title="My Reviews"

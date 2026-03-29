@@ -50,7 +50,7 @@ export default function HelpPage() {
   ]
 
   return (
-    <div className="bg-[var(--warm-white)] min-h-screen pt-28 pb-20">
+    <div className="bg-[var(--warm-white)] min-h-screen pt-8 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <PageHeader 
           title={t('help.title')} 

@@ -17,7 +17,7 @@ export default async function AdminDashboard() {
   ]
 
   return (
-    <div className="bg-[var(--warm-white)] min-h-screen pt-32 pb-20">
+    <div className="bg-[var(--warm-white)] min-h-screen pt-8 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>

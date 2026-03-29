@@ -56,11 +56,11 @@ export default function BookingDetailsPage({ params: paramsPromise }: { params: 
   // Optionally check if date is in future
   const isFuture = booking && new Date(booking.check_in) > new Date()
 
-  if (loading) return <div className="min-h-screen pt-28 text-center font-bold">Loading...</div>
+  if (loading) return <div className="min-h-screen pt-8 text-center font-bold">Loading...</div>
   if (!booking) notFound()
 
   return (
-    <div className="bg-gray-50/50 min-h-screen pt-24 pb-20">
+    <div className="bg-gray-50/50 min-h-screen pt-8 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link href="/bookings" className="inline-flex items-center text-sm font-bold text-gray-500 hover:text-blue-600 mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />

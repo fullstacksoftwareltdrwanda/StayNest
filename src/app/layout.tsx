@@ -15,6 +15,8 @@ import { SettingsProvider } from "@/context/SettingsContext";
 import { MobileNavWrapper } from "@/components/ui/MobileNavWrapper";
 import { NavbarWrapper } from "@/components/ui/NavbarWrapper";
 
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,6 +33,7 @@ export default function RootLayout({
             {children}
           </MobileNavWrapper>
         </SettingsProvider>
+        <Toaster />
       </body>
     </html>
   );
