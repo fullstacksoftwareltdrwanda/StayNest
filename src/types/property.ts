@@ -9,6 +9,8 @@ export interface Property {
   country: string;
   city: string;
   address: string;
+  latitude?: number;
+  longitude?: number;
   main_image_url?: string;
   images?: string[];
   status: PropertyStatus;

@@ -2,12 +2,13 @@
 
 import { CategoryScroller } from '@/components/home/CategoryScroller'
 import { HomepagePropertyCard } from '@/components/home/HomepagePropertyCard'
-import { SectionHeader } from '@/components/home/SectionHeader'
+import { SectionHeader } from '@/components/shared/SectionHeader'
 import { CTASection } from '@/components/home/CTASection'
 import { HomeFooter } from '@/components/home/HomeFooter'
 import { EmptyState } from '@/components/shared/empty-state'
 import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/shared/Button'
 import { PropertySearchResult } from '@/types/search'
 import { useSettings } from '@/context/SettingsContext'
 import { useState, useEffect } from 'react'
@@ -54,29 +55,29 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
       </section>
 
       {/* ─── Featured / Popular Properties ─────── */}
-      <section className="py-16 sm:py-20">
+      <section className="py-24 sm:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between">
-            <SectionHeader
-              label={t('home.popular.label')}
-              title={t('home.popular.title')}
-              subtitle={t('home.popular.subtitle')}
-            />
-            <Link
-              href="/search"
-              className="hidden sm:flex items-center gap-1 text-sm font-bold text-[var(--primary)] hover:underline mb-10"
-            >
-              {t('home.view_all')} <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
+          <SectionHeader
+            label={t('home.popular.label')}
+            title={t('home.popular.title')}
+            subtitle={t('home.popular.subtitle')}
+            action={
+              <Link href="/search" className="hidden sm:block">
+                <Button variant="outline" size="md" rightIcon={<ArrowRight className="w-4 h-4" />}>
+                  {t('home.view_all')}
+                </Button>
+              </Link>
+            }
+          />
 
           {initialProperties.length === 0 ? (
             <EmptyState
+              variant="search"
               title={t('home.no_results')}
               description={t('common.search.no_results_desc')}
             />
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {featured.map((property, i) => (
                 <HomepagePropertyCard key={property.id} property={property} featured user={user} index={i} />
               ))}
@@ -87,19 +88,19 @@ export function HomePageClient({ initialProperties, stats }: HomePageClientProps
 
       {/* ─── Explore Rwanda Section ─────────────── */}
       {regular.length > 0 && (
-        <section className="bg-[var(--warm-gray)] py-16 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 lg:mb-32">
-          <SectionHeader
-            title={t('home.discover.title')}
-            subtitle={t('home.discover.subtitle')}
-            label={t('home.discover.label')}
-          />
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-            {regular.map((property, i) => (
-              <HomepagePropertyCard key={property.id} property={property} user={user} index={i} />
-            ))}
+        <section className="bg-[var(--warm-gray)]/30 py-24 sm:py-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SectionHeader
+              title={t('home.discover.title')}
+              subtitle={t('home.discover.subtitle')}
+              label={t('home.discover.label')}
+            />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+              {regular.map((property, i) => (
+                <HomepagePropertyCard key={property.id} property={property} user={user} index={i + 4} />
+              ))}
+            </div>
           </div>
-        </div>
         </section>
       )}
 

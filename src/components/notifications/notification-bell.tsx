@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Bell } from 'lucide-react'
 import { Notification } from '@/types/notification'
 import { NotificationList } from './notification-list'
-import { getUserNotifications, getUnreadCount } from '@/lib/notifications/getUserNotifications'
+import { getNotificationUpdate } from '@/lib/notifications/getUserNotifications'
 import Link from 'next/link'
 
 export function NotificationBell() {
@@ -14,19 +14,21 @@ export function NotificationBell() {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const fetchNotifications = async () => {
-    const [notifs, count] = await Promise.all([
-      getUserNotifications(5),
-      getUnreadCount()
-    ])
-    setNotifications(notifs)
-    setUnreadCount(count)
+    try {
+      const { notifications: notifs, unreadCount: count } = await getNotificationUpdate(5)
+      setNotifications(notifs)
+      setUnreadCount(count)
+    } catch (err) {
+      // Gracefully handle background fetch failures
+      console.error('Background notification sync failed:', err)
+    }
   }
 
   useEffect(() => {
     fetchNotifications()
     
-    // Refresh periodically or we could use Supabase Realtime here
-    const interval = setInterval(fetchNotifications, 30000)
+    // Refresh periodically (every 60s for performance)
+    const interval = setInterval(fetchNotifications, 60000)
     
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

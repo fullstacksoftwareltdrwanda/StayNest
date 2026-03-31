@@ -13,7 +13,7 @@ export async function getFeaturedProperties(limit = 12): Promise<PropertySearchR
   const { data, error } = await supabase
     .from('properties')
     .select(`
-      *,
+      id, name, type, description, address, city, country, main_image_url,
       rooms (price_per_night, capacity),
       reviews (rating)
     `)

@@ -6,6 +6,8 @@ import { Bell, CheckSquare } from 'lucide-react'
 import { markAllAsRead } from '@/lib/notifications/markAsRead'
 import { revalidatePath } from 'next/cache'
 
+export const dynamic = 'force-dynamic'
+
 export default async function NotificationsPage() {
   const notifications = await getUserNotifications(100)
   const unreadCount = notifications.filter(n => !n.is_read).length

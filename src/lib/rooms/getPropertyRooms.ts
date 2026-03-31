@@ -6,7 +6,7 @@ export async function getPropertyRooms(propertyId: string) {
   
   const { data, error } = await supabase
     .from('rooms')
-    .select('*')
+    .select('id, property_id, name, description, price_per_night, capacity, available_rooms, bed_type, size_sqm, facilities, images')
     .eq('property_id', propertyId)
     .order('created_at', { ascending: false })
 

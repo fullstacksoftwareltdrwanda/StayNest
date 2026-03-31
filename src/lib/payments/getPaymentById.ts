@@ -8,12 +8,12 @@ export async function getPaymentById(paymentId: string): Promise<Payment | null>
   
   const { data, error } = await supabase
     .from('payments')
-    .select('*')
+    .select('id, booking_id, user_id, amount, currency, status, created_at, updated_at, method, transaction_reference')
     .eq('id', paymentId)
     .single()
 
   if (error) {
-    console.error('GET PAYMENT ERROR:', error)
+    console.error('GET PAYMENT ERROR:', error.message || error)
     return null
   }
 

@@ -6,6 +6,7 @@ import { CheckCircle2, Calendar, Receipt, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { PaymentStatusBadge } from './payment-status-badge'
 import { useSettings } from '@/context/SettingsContext'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 interface PaymentSuccessCardProps {
   payment: Payment
@@ -20,15 +21,8 @@ export function PaymentSuccessCard({ payment, booking }: PaymentSuccessCardProps
     <div className="max-w-3xl mx-auto">
       <div className="bg-white rounded-[2.5rem] md:rounded-[4rem] border border-gray-100 shadow-2xl shadow-[var(--primary)]/5 overflow-hidden transform transition-all hover:scale-[1.005]">
         <div className="bg-[var(--primary)] p-8 md:p-12 text-center text-white relative">
-          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0 0 L100 0 L100 100 L0 100 Z" fill="url(#grid)" />
-              <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="var(--primary)" strokeWidth="0.5"/>
-                </pattern>
-              </defs>
-            </svg>
+          <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+            <ImigongoPattern variant="dark" className="absolute inset-0 w-full h-full text-[var(--accent)] text-opacity-20" />
           </div>
           
           <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-white/20 backdrop-blur-xl rounded-2xl md:rounded-[2.5rem] mb-6 md:mb-8 border border-white/20 animate-in zoom-in duration-500">

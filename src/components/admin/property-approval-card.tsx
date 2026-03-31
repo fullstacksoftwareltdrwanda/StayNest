@@ -5,6 +5,7 @@ import { StatusBadge } from '@/components/shared/status-badge'
 import { Button } from '@/components/ui/Button'
 import { Home, User, MapPin, ExternalLink, Check, X } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -47,9 +48,15 @@ export function PropertyApprovalCard({ property, onActionComplete }: PropertyApp
 
   return (
     <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col md:flex-row gap-8 hover:shadow-xl hover:shadow-gray-200/50 transition-all">
-      <div className="w-full md:w-48 h-32 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100">
+      <div className="w-full md:w-48 h-32 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100 relative">
         {property.main_image_url ? (
-          <img src={property.main_image_url} alt={property.name} className="w-full h-full object-cover" />
+          <Image 
+            src={property.main_image_url} 
+            alt={property.name} 
+            fill
+            sizes="(max-width: 768px) 100vw, 192px"
+            className="object-cover" 
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-300">
             <Home className="w-10 h-10" />

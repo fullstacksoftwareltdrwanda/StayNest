@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { useSettings } from '@/context/SettingsContext'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 export function HomeFooter() {
   const { t } = useSettings()
 
   return (
-    <footer className="bg-[var(--primary-dark)] text-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[var(--primary-dark)] text-white pt-16 pb-8 relative overflow-hidden">
+      <ImigongoPattern variant="dark" opacity={0.1} className="absolute inset-0 w-full h-full pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           {/* Company */}
           <div>

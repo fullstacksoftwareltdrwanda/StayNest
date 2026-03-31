@@ -74,14 +74,29 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     fetchSettings()
   }, [])
 
-  // 2. Fetch Exchange Rates (Base USD)
+  // 2. Fetch Exchange Rates (Base USD) with Caching
   useEffect(() => {
     const fetchRates = async () => {
       try {
+        const CACHE_KEY = 'urugostay_exchange_rates'
+        const CACHE_TIME_KEY = 'urugostay_exchange_rates_timestamp'
+        const ONE_DAY = 24 * 60 * 60 * 1000
+
+        const cached = localStorage.getItem(CACHE_KEY)
+        const timestamp = localStorage.getItem(CACHE_TIME_KEY)
+        const now = Date.now()
+
+        if (cached && timestamp && (now - Number(timestamp) < ONE_DAY)) {
+          setExchangeRates(JSON.parse(cached))
+          return
+        }
+
         const res = await fetch('https://open.er-api.com/v6/latest/USD')
         const data = await res.json()
         if (data && data.rates) {
           setExchangeRates(data.rates)
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data.rates))
+          localStorage.setItem(CACHE_TIME_KEY, String(now))
         }
       } catch (err) {
         console.error('Failed to fetch exchange rates:', err)

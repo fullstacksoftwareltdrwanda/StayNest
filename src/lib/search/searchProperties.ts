@@ -7,7 +7,7 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
   let query = supabase
     .from('properties')
     .select(`
-      *,
+      id, name, type, description, address, city, country, latitude, longitude, main_image_url,
       rooms (
         price_per_night,
         capacity
@@ -74,6 +74,8 @@ export async function searchProperties(filters: SearchFilters): Promise<Property
         address: p.address,
         city: p.city,
         country: p.country,
+        latitude: p.latitude,
+        longitude: p.longitude,
         main_image_url: p.main_image_url,
         starting_price: roomPrices.length > 0 ? Math.min(...roomPrices) : null,
         capacity: roomCapacities.length > 0 ? Math.max(...roomCapacities) : 0,

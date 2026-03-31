@@ -1,14 +1,12 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { createBooking } from '@/lib/bookings/createBooking'
 import { getNightsCount, calculateBookingTotal } from '@/lib/bookings/calculateBookingTotal'
-import { Loader2, Calendar, Users as UsersIcon } from 'lucide-react'
-
+import { Calendar, Users as UsersIcon, Sparkles, ArrowRight } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
+import { Input } from '@/components/shared/Input'
+import { Button } from '@/components/shared/Button'
+import { Card, CardHeader, CardContent } from '@/components/shared/Card'
 
 interface BookingFormProps {
   propertyId: string
@@ -71,78 +69,93 @@ export function BookingForm({ propertyId, roomId, roomPrice, maxCapacity, onDeta
     }
   }
 
+  const nights = getNightsCount(formData.checkIn, formData.checkOut)
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-10 bg-white p-6 md:p-12 rounded-[2.5rem] border border-gray-100 shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-        <div className="space-y-3">
-          <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.check_in')}</label>
-          <div className="relative group">
-            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
-            <input
-              type="date"
+    <Card variant="default" padding="none" className="overflow-hidden rounded-[2.5rem] sm:rounded-[3rem] border-white/60 shadow-2xl shadow-black/[0.04]">
+      <CardHeader 
+        className="bg-[var(--warm-gray)]/30 px-8 py-8 sm:px-12 sm:py-10 border-b border-[var(--warm-gray)]/50"
+        title={t('confirm.details_title') || 'Reservation Details'}
+        icon={<Sparkles className="w-5 h-5 text-[var(--accent)]" />}
+      />
+      <CardContent className="p-8 sm:p-12">
+        <form onSubmit={handleSubmit} className="space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] ml-1">
+                {t('confirm.check_in')}
+              </label>
+              <Input
+                type="date"
+                required
+                min={new Date().toISOString().split('T')[0]}
+                value={formData.checkIn}
+                onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
+                icon={<Calendar className="w-5 h-5 text-[var(--accent)]" />}
+                className="h-16 rounded-2xl group-focus-within:border-[var(--primary)]/20 transition-all font-bold"
+              />
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em] ml-1">
+                {t('confirm.check_out')}
+              </label>
+              <Input
+                type="date"
+                required
+                min={formData.checkIn}
+                value={formData.checkOut}
+                onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
+                icon={<Calendar className="w-5 h-5 text-[var(--accent)]" />}
+                className="h-16 rounded-2xl group-focus-within:border-[var(--primary)]/20 transition-all font-bold"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between ml-1">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.25em]">
+                {t('confirm.num_guests')}
+              </label>
+              <span className="text-[9px] font-black text-[var(--accent)] uppercase tracking-widest bg-[var(--accent)]/5 px-2 py-0.5 rounded-md">
+                {t('confirm.max_capacity')}: {maxCapacity} guests
+              </span>
+            </div>
+            <Input
+              type="number"
               required
-              min={new Date().toISOString().split('T')[0]}
-              value={formData.checkIn}
-              onChange={(e) => setFormData(prev => ({ ...prev, checkIn: e.target.value }))}
-              className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
+              min={1}
+              max={maxCapacity || 1}
+              value={isNaN(formData.guests) ? '' : formData.guests}
+              onChange={(e) => {
+                const val = e.target.value === '' ? NaN : parseInt(e.target.value)
+                setFormData(prev => ({ ...prev, guests: val }))
+              }}
+              icon={<UsersIcon className="w-5 h-5 text-[var(--accent)]" />}
+              className="h-16 rounded-2xl group-focus-within:border-[var(--primary)]/20 transition-all font-bold"
             />
           </div>
-        </div>
 
-        <div className="space-y-3">
-          <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.check_out')}</label>
-          <div className="relative group">
-            <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
-            <input
-              type="date"
-              required
-              min={formData.checkIn}
-              value={formData.checkOut}
-              onChange={(e) => setFormData(prev => ({ ...prev, checkOut: e.target.value }))}
-              className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
-            />
+          <div className="pt-6">
+            <Button 
+              type="submit" 
+              size="lg"
+              disabled={loading || nights <= 0}
+              isLoading={loading}
+              className="w-full h-20 sm:h-24 rounded-[1.5rem] sm:rounded-[2.5rem] text-sm sm:text-base font-black uppercase tracking-[0.25em] shadow-2xl shadow-[var(--primary)]/20 hover:shadow-[var(--primary)]/30 active:scale-[0.98]"
+              rightIcon={!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />}
+            >
+              {t('confirm.confirm_btn') || 'Proceed to Payment'}
+            </Button>
+            
+            <p className="text-center text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-8 flex items-center justify-center gap-2">
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              Secure Encrypted Transaction
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+            </p>
           </div>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">{t('confirm.num_guests')}</label>
-        <div className="relative group">
-          <UsersIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--accent)] z-10 group-focus-within:scale-110 transition-transform" />
-          <input
-            type="number"
-            required
-            min={1}
-            max={maxCapacity || 1}
-            value={isNaN(formData.guests) ? '' : formData.guests}
-            onChange={(e) => {
-              const val = e.target.value === '' ? NaN : parseInt(e.target.value)
-              setFormData(prev => ({ ...prev, guests: val }))
-            }}
-            className="w-full pl-14 pr-6 py-5 bg-[var(--warm-gray)]/30 border-2 border-transparent rounded-[1.5rem] outline-none focus:border-[var(--primary)]/10 focus:bg-white text-gray-900 font-bold transition-all"
-          />
-        </div>
-        <p className="text-[10px] text-[var(--accent)] font-bold uppercase tracking-[0.1em] mt-3 ml-1">
-          {t('confirm.max_capacity')}: {maxCapacity} {t('property.guests')}
-        </p>
-      </div>
-
-      <div className="pt-8">
-        <Button 
-          type="submit" 
-          disabled={loading || getNightsCount(formData.checkIn, formData.checkOut) <= 0}
-          className="w-full py-10 text-xl rounded-[2rem] shadow-[0_20px_50px_rgba(27,67,50,0.15)] transition-all hover:shadow-[0_20px_50px_rgba(27,67,50,0.25)] hover:-translate-y-1 active:scale-[0.98] font-black"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-3 h-6 w-6 animate-spin" />
-              {t('confirm.processing')}
-            </>
-          ) : (
-            t('confirm.confirm_btn')
-          )}
-        </Button>
-      </div>
-    </form>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

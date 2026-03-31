@@ -53,6 +53,7 @@
     "review": "review",
     "guest": "guest",
     "guests": "guests",
+    "guest_favorite": "Guest favorite",
     "view_property": "View Property"
   },
   "booking": {
@@ -111,6 +112,7 @@
   },
   "rooms": {
     "available_rooms": "Available Rooms",
+    "room_type": "room type",
     "room_types": "room types",
     "up_to": "Up to",
     "guests": "guests",

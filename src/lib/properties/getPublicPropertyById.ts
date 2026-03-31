@@ -6,7 +6,7 @@ export async function getPublicPropertyById(id: string) {
   
   const { data, error } = await supabase
     .from('properties')
-    .select('*')
+    .select('id, owner_id, name, type, description, country, city, address, main_image_url, status, created_at, updated_at')
     .eq('id', id)
     .eq('status', 'approved')
     .single()

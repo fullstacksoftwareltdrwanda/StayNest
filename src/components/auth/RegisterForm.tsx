@@ -10,6 +10,7 @@ import { LoadingSpinner, UrugostayLoader } from '@/components/shared/loading-spi
 import { AlertCircle, CheckCircle, UserPlus, Users, Home, Star } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
 import { toast } from 'sonner'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 interface RegisterFormProps {
   stats: {
@@ -72,6 +73,8 @@ export function RegisterForm({ stats }: RegisterFormProps) {
     <div className="min-h-screen flex bg-[var(--background)]">
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[var(--primary-dark)] via-[var(--primary)] to-[var(--primary-light)] relative overflow-hidden flex-col justify-between p-12 xl:p-16">
+        {/* Imigongo heritage pattern */}
+        <ImigongoPattern variant="dark" opacity={0.2} className="absolute inset-0 w-full h-full" />
         {/* Animated orbs */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-20 -right-20 w-80 h-80 bg-[var(--accent)]/10 rounded-full animate-float" style={{ animationDelay: '0s' }} />

@@ -3,14 +3,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { createNotification } from '@/lib/notifications/createNotification'
+import { isAdmin } from '@/lib/auth/access'
 
 export async function getPlatformProperties(status?: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
   
   let query = supabase
     .from('properties')
     .select(`
-      *,
+      id, name, type, status, city, country, main_image_url, owner_id, created_at,
       owner:profiles!owner_id(full_name, email)
     `)
     .order('created_at', { ascending: false })
@@ -30,6 +34,9 @@ export async function getPlatformProperties(status?: string) {
 }
 
 export async function approveProperty(propertyId: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
   
   const { data: property, error: fetchError } = await supabase
@@ -61,6 +68,9 @@ export async function approveProperty(propertyId: string) {
 }
 
 export async function rejectProperty(propertyId: string, reason?: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
   
   const { data: property, error: fetchError } = await supabase
@@ -92,11 +102,14 @@ export async function rejectProperty(propertyId: string, reason?: string) {
 }
 
 export async function getPlatformUsers() {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, full_name, email, role, avatar_url, created_at')
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -108,6 +121,9 @@ export async function getPlatformUsers() {
 }
 
 export async function updateUserRole(userId: string, role: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
   
   const { error } = await supabase
@@ -140,6 +156,9 @@ export async function getPublicPlatformAnalytics() {
 }
 
 export async function getPlatformAnalytics() {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
   const supabase = await createClient()
 
   // Parallel counts for efficiency
@@ -166,6 +185,7 @@ export async function getPlatformAnalytics() {
     ? (reviewsData || []).reduce((sum, r) => sum + r.rating, 0) / (reviewsData || []).length
     : 0
 
+
   return {
     totalUsers: usersCount || 0,
     totalProperties: propertiesCount || 0,
@@ -176,3 +196,114 @@ export async function getPlatformAnalytics() {
     averageRating: Number(averageRating.toFixed(1))
   }
 }
+
+export async function getPlatformBookings(status?: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  const supabase = await createClient()
+  
+  let query = supabase
+    .from('bookings')
+    .select(`
+      id, 
+      check_in, 
+      check_out, 
+      total_price, 
+      status, 
+      created_at,
+      guest:profiles!user_id(id, full_name, email, avatar_url),
+      property:properties!property_id(id, name, city, country, main_image_url)
+    `)
+    .order('created_at', { ascending: false })
+
+  if (status && status !== 'all') {
+    query = query.eq('status', status)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching platform bookings:', error)
+    return []
+  }
+
+  return data
+}
+
+export async function getPlatformPayments(status?: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  const supabase = await createClient()
+  
+  let query = supabase
+    .from('payments')
+    .select(`
+      id, 
+      amount, 
+      status, 
+      created_at,
+      provider_payment_id,
+      user:profiles!user_id(id, full_name, email),
+      booking:bookings!booking_id(id, check_in, check_out)
+    `)
+    .order('created_at', { ascending: false })
+
+  if (status && status !== 'all') {
+    query = query.eq('status', status)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error('Error fetching platform payments:', error)
+    return []
+  }
+
+  return data
+}
+
+export async function getPlatformReviews() {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  const supabase = await createClient()
+  
+  const { data, error } = await supabase
+    .from('reviews')
+    .select(`
+      id, 
+      rating, 
+      comment, 
+      created_at,
+      user:profiles!user_id(id, full_name, avatar_url),
+      property:properties!property_id(id, name)
+    `)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching platform reviews:', error)
+    return []
+  }
+
+  return data
+}
+
+export async function deleteReview(reviewId: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  const supabase = await createClient()
+  
+  const { error } = await supabase
+    .from('reviews')
+    .delete()
+    .eq('id', reviewId)
+
+  if (error) throw error
+
+  revalidatePath('/admin/reviews')
+  revalidatePath('/admin/dashboard')
+}
+

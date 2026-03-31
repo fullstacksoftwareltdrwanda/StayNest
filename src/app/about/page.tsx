@@ -1,11 +1,13 @@
 import { HomeHero } from "@/components/home/HomeHero";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HomeFooter } from "@/components/home/HomeFooter";
+import { ImigongoPattern } from "@/components/shared/imigongo-pattern";
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[var(--warm-white)]">
       <section className="relative py-24 bg-[var(--primary-dark)] text-white overflow-hidden">
+        <ImigongoPattern variant="dark" opacity={0.15} className="absolute inset-0 w-full h-full" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <h1 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
             Redefining <span className="text-[var(--accent)]">Hospitality</span> in the heart of Africa.

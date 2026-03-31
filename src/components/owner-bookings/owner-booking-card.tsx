@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { Calendar, Users, Home, ChevronRight } from 'lucide-react'
 import { OwnerBookingStatusBadge } from './owner-booking-status-badge'
@@ -12,12 +13,18 @@ interface OwnerBookingCardProps {
 
 export function OwnerBookingCard({ booking }: OwnerBookingCardProps) {
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 p-6 hover:shadow-xl hover:shadow-[var(--primary)]/5 transition-all group">
+    <div className="bg-white rounded-3xl border border-gray-100 p-6 hover:shadow-xl hover:shadow-[var(--primary)]/5 transition-all group focus-within:shadow-[var(--primary)]/5">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center space-x-4 flex-1">
-          <div className="w-16 h-16 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl overflow-hidden flex-shrink-0 border border-gray-100 relative">
             {booking.guest?.avatar_url ? (
-              <img src={booking.guest.avatar_url} alt={booking.guest.full_name} className="w-full h-full object-cover" />
+              <Image 
+                src={booking.guest.avatar_url} 
+                alt={booking.guest.full_name} 
+                fill
+                sizes="64px"
+                className="object-cover" 
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-300 font-bold text-xl uppercase">
                 {booking.guest?.full_name?.charAt(0)}

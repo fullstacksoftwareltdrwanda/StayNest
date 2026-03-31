@@ -3,8 +3,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { CreateReviewInput } from '@/types/review'
 import { canUserReviewBooking } from './canUserReviewBooking'
-
+import { reviewSchema } from '@/lib/validation'
 import { createNotification } from '@/lib/notifications/createNotification'
+import { revalidatePath } from 'next/cache'
 
 export async function createReview(input: CreateReviewInput) {
   const supabase = await createClient()
@@ -12,10 +13,17 @@ export async function createReview(input: CreateReviewInput) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  // Double check eligibility
-  const { canReview, error, property } = await canUserReviewBooking(input.booking_id)
-  if (!canReview) throw new Error(error)
+  // 1. Validation (Zod)
+  const validation = reviewSchema.safeParse(input)
+  if (!validation.success) {
+    throw new Error(validation.error.issues.map(i => i.message).join('. '))
+  }
 
+  // 2. Eligibility & Ownership Check
+  const { canReview, error, property } = await canUserReviewBooking(input.booking_id)
+  if (!canReview) throw new Error(error || 'You are not eligible to review this stay')
+
+  // 3. Execution
   const { data, error: insertError } = await supabase
     .from('reviews')
     .insert({
@@ -32,18 +40,20 @@ export async function createReview(input: CreateReviewInput) {
     if (insertError.code === '23505') {
        throw new Error('You have already reviewed this stay.')
     }
-    throw insertError
+    console.error('CREATE REVIEW ERROR:', insertError)
+    throw new Error('Failed to post review')
   }
 
-  // Create notification for the user
+  // 4. Notifications
+  const propertyName = (property as any)?.name || 'the property'
+  
   await createNotification({
     user_id: user.id,
     title: 'Review Posted!',
-    message: `Your review for ${property?.name || 'the property'} has been successfully posted.`,
+    message: `Your review for ${propertyName} has been successfully posted.`,
     type: 'review'
   })
 
-  // Notify the owner
   const { data: propertyData } = await supabase
     .from('properties')
     .select('owner_id')
@@ -54,10 +64,12 @@ export async function createReview(input: CreateReviewInput) {
     await createNotification({
       user_id: propertyData.owner_id,
       title: 'New Review Received',
-      message: `A guest left a ${input.rating}-star review for ${property?.name || 'your property'}.`,
+      message: `A guest left a ${input.rating}-star review for ${propertyName}.`,
       type: 'review'
     })
   }
 
+  revalidatePath(`/properties/${input.property_id}`)
+  revalidatePath('/dashboard')
   return data
 }

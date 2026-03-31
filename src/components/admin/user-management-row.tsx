@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { User, Mail, Shield, UserCheck, MoreVertical, Calendar } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 interface UserManagementRowProps {
   user: any
@@ -30,11 +31,17 @@ export function UserManagementRow({ user, onActionComplete }: UserManagementRowP
   }
 
   return (
-    <div className="bg-white rounded-[2rem] border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl hover:shadow-gray-200/50 transition-all group">
+    <div className="bg-white rounded-[2rem] border border-gray-100 p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-xl hover:shadow-gray-200/50 transition-all group focus-within:shadow-gray-200/50">
       <div className="flex items-center gap-6 w-full md:w-auto">
-        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 group-hover:bg-[var(--primary)] group-hover:text-white transition-colors">
+        <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 group-hover:bg-[var(--primary)] group-hover:text-white transition-colors relative overflow-hidden">
           {user.avatar_url ? (
-            <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover rounded-2xl" />
+            <Image 
+              src={user.avatar_url} 
+              alt={user.full_name} 
+              fill
+              sizes="56px"
+              className="object-cover rounded-2xl" 
+            />
           ) : (
             <User className="w-6 h-6" />
           )}

@@ -21,8 +21,11 @@ export function HomepagePropertyCard({ property, featured = false, user, index =
 
   return (
     <div
-      className="group relative animate-card-enter"
-      style={{ animationDelay: `${index * 80}ms`, animationFillMode: 'backwards' }}
+      className="group relative animate-card-enter opacity-0"
+      style={{ 
+        animationDelay: `${index * 80}ms`, 
+        animationFillMode: 'forwards' 
+      }}
     >
       <Link 
         href={!user ? `/login?redirect=/properties/${property.id}` : `/properties/${property.id}`}
@@ -30,65 +33,63 @@ export function HomepagePropertyCard({ property, featured = false, user, index =
       >
         {/* Image Container */}
         <div className={cn(
-          "relative overflow-hidden rounded-2xl sm:rounded-3xl transition-all duration-700 ease-out",
-          featured ? 'h-44 sm:h-72 lg:h-80' : 'h-40 sm:h-64 lg:h-72',
-          "shadow-sm group-hover:shadow-xl group-hover:shadow-[var(--primary)]/[0.08]",
-          "ring-1 ring-black/[0.03] group-hover:ring-[var(--primary)]/10"
+          "relative overflow-hidden rounded-[2rem] transition-all duration-700 ease-out",
+          featured ? 'aspect-square sm:aspect-[4/3]' : 'aspect-square',
+          "group-hover:shadow-xl transition-shadow duration-500"
         )}>
           {property.main_image_url ? (
             <Image
               src={property.main_image_url}
               alt={property.name}
               fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover group-hover:scale-110 transition-transform duration-[1.2s] ease-out"
+              priority={index < 4}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-out"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[var(--primary)]/5 to-[var(--warm-gray)] flex items-center justify-center text-[var(--primary)]/20">
-              <Home className="w-10 h-10 sm:w-14 sm:h-14" />
+            <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-300">
+              <Home className="w-12 h-12" />
             </div>
           )}
           
-          {/* Hover gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          {/* Type badge - top left */}
-          <div className="absolute top-2.5 sm:top-3 left-2.5 sm:left-3 px-2 sm:px-2.5 py-0.5 sm:py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[8px] sm:text-[9px] font-black text-[var(--primary)] uppercase tracking-widest shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500 delay-75">
-            {t(`common.property_types.${property.type.toLowerCase()}`)}
-          </div>
-
-          {/* Rating - bottom right */}
-          {property.average_rating && property.average_rating > 0 && (
-            <div className="absolute bottom-2.5 sm:bottom-3 right-2.5 sm:right-3 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-lg px-2 sm:px-2.5 py-1 sm:py-1.5 shadow-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-500 delay-100">
-              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-[var(--accent)] text-[var(--accent)]" />
-              <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-none">
-                {property.average_rating}
-              </span>
-              <span className="text-[8px] sm:text-[10px] font-bold text-gray-400 leading-none border-l border-gray-200 pl-1 sm:pl-1.5 ml-0.5">
-                {property.review_count}
+          {/* Guest Favorite Badge */}
+          {(property.average_rating || 0) >= 4.8 && (
+            <div className="absolute top-3 left-3 px-3 py-1 bg-white border border-black/5 rounded-full shadow-md z-10 flex items-center">
+              <span className="text-[11px] font-bold text-black tracking-tight leading-none">
+                {t('property.guest_favorite') || 'Guest favorite'}
               </span>
             </div>
           )}
+        </div>
 
-          {/* Name overlay on hover - bottom left */}
-          <div className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 right-12 sm:right-16 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500 delay-150">
-            <div className="flex items-center gap-1 text-white/80 text-[9px] sm:text-[10px]">
-              <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[var(--accent)]" />
-              <span className="font-bold truncate">{property.city}, {property.country}</span>
+        {/* Info Footer */}
+        <div className="mt-3 space-y-1">
+          <div className="flex items-start justify-between">
+            <h3 className="text-[15px] font-bold text-gray-900 tracking-tight leading-snug">
+              {t(`common.property_types.${property.type.toLowerCase()}`)} in {property.city}
+            </h3>
+          </div>
+          
+          <div className="flex items-center justify-between text-[14px]">
+            <div className="flex items-center gap-1 text-gray-500">
+              <span className="font-bold text-gray-900">{formatPrice(property.starting_price || 0)}</span>
+              <span>{t('property.night')}</span>
+              {property.average_rating && property.average_rating > 0 && (
+                <>
+                  <span className="mx-1">·</span>
+                  <div className="flex items-center gap-1">
+                    <Star className="w-3 h-3 fill-current text-gray-900" />
+                    <span className="text-gray-900">{property.average_rating}</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
-
-        {/* Card info */}
-        <div className="mt-2 sm:mt-3 px-0.5 sm:px-1">
-          <h3 className="text-xs sm:text-sm font-black text-gray-900 group-hover:text-[var(--primary)] transition-all duration-300 tracking-tight truncate">
-            {property.name}
-          </h3>
-        </div>
       </Link>
 
-      {/* Favorite button - outside Link */}
-      <div className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      {/* Favorite Button */}
+      <div className="absolute top-4 right-4 z-20">
         <FavoriteButton 
           propertyId={property.id} 
           initialIsFavorited={property.is_favorited || false} 

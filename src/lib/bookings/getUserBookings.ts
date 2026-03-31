@@ -31,12 +31,15 @@ export async function getUserBookings() {
 
 export async function getBookingById(id: string) {
   const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
 
   const { data, error } = await supabase
     .from('bookings')
     .select(`
       *,
-      property:properties(name, city, country, main_image_url, address, type),
+      property:properties(owner_id, name, city, country, main_image_url, address, type),
       room:rooms(name, description, price_per_night, bed_type),
       payments(*),
       reviews(id)
@@ -44,10 +47,20 @@ export async function getBookingById(id: string) {
     .eq('id', id)
     .single()
 
-  if (error) {
-    if (error.code !== 'PGRST116') {
+  if (error || !data) {
+    if (error && error.code !== 'PGRST116') {
       console.error('Error fetching booking by id:', error)
     }
+    return null
+  }
+
+  // 1. Security Check: Only the guest (user_id) or the property owner can view this booking
+  // @ts-ignore
+  const isOwner = data.property?.owner_id === user.id
+  const isGuest = data.user_id === user.id
+
+  if (!isOwner && !isGuest) {
+    console.warn(`Unauthorized booking access attempt by user ${user.id} on booking ${id}`)
     return null
   }
 

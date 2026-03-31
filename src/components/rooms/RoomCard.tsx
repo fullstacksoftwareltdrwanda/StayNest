@@ -10,11 +10,11 @@ interface RoomCardProps {
 
 export function RoomCard({ room, propertyId }: RoomCardProps) {
   return (
-    <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-xl hover:shadow-[var(--primary)]/10 transition-all duration-300 group">
+    <div className="bg-white rounded-[2rem] border border-gray-100 p-6 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:shadow-2xl hover:shadow-[var(--primary)]/[0.04] transition-all duration-500 group">
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between md:justify-start md:space-x-4">
-          <h3 className="text-xl font-bold text-gray-900 leading-none">{room.name}</h3>
-          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[var(--primary)]/5 text-[var(--primary)] uppercase tracking-widest">
+          <h3 className="text-lg font-bold text-gray-900 tracking-tight leading-none">{room.name}</h3>
+          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[var(--primary)]/5 text-[var(--primary)] tracking-tight">
             {room.bed_type || 'Standard'}
           </span>
         </div>
@@ -23,19 +23,19 @@ export function RoomCard({ room, propertyId }: RoomCardProps) {
           {room.description}
         </p>
  
-        <div className="flex flex-wrap gap-4 text-xs font-medium text-gray-600">
-          <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded-full">
-            <Users className="w-3.5 h-3.5 text-[var(--primary)]" />
-            <span>Up to {room.capacity} guests</span>
+        <div className="flex flex-wrap gap-3 text-xs font-bold text-gray-600">
+          <div className="flex items-center space-x-2 bg-gray-50/80 px-4 py-2 rounded-xl">
+            <Users className="w-4 h-4 text-[var(--primary)]" />
+            <span className="tracking-tight">Up to {room.capacity} guests</span>
           </div>
-          <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded-full">
-            <BedDouble className="w-3.5 h-3.5 text-[var(--primary)]" />
-            <span>{room.available_rooms} rooms available</span>
+          <div className="flex items-center space-x-2 bg-gray-50/80 px-4 py-2 rounded-xl">
+            <BedDouble className="w-4 h-4 text-[var(--primary)]" />
+            <span className="tracking-tight">{room.available_rooms} rooms left</span>
           </div>
           {room.size_sqm && (
-            <div className="flex items-center space-x-1.5 bg-gray-50 px-3 py-1.5 rounded-full">
-              <MousePointer2 className="w-3.5 h-3.5 text-[var(--primary)]" />
-              <span>{room.size_sqm} m²</span>
+            <div className="flex items-center space-x-2 bg-gray-50/80 px-4 py-2 rounded-xl">
+              <MousePointer2 className="w-4 h-4 text-[var(--primary)]" />
+              <span className="tracking-tight">{room.size_sqm} m²</span>
             </div>
           )}
         </div>
@@ -43,8 +43,8 @@ export function RoomCard({ room, propertyId }: RoomCardProps) {
 
       <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center border-t md:border-t-0 md:border-l border-gray-50 pt-6 md:pt-0 md:pl-10 space-y-0 md:space-y-4">
         <div className="text-right">
-          <div className="text-2xl font-black text-gray-900">${room.price_per_night}</div>
-          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">per night</div>
+          <div className="text-xl font-bold text-gray-900 tracking-tight">${room.price_per_night}</div>
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">per night</div>
         </div>
         <div className="flex space-x-2">
           <Link href={`/owner/properties/${propertyId}/rooms/${room.id}`}>

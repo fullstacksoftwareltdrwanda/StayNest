@@ -3,12 +3,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { PaymentStatus } from '@/types/payment'
 import { revalidatePath } from 'next/cache'
-
+import { isAdmin } from '@/lib/auth/access'
 import { createNotification } from '@/lib/notifications/createNotification'
 
 export async function updatePaymentStatus(paymentId: string, status: PaymentStatus, transactionReference?: string) {
   const supabase = await createClient()
 
+  // 1. Security Check: Only admins can manually update payment status via this action
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required to update payment records.')
+
+  // 2. Execution
   const updateData: any = { 
     status,
     updated_at: new Date().toISOString()
@@ -27,10 +32,10 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
 
   if (error) {
     console.error('UPDATE PAYMENT STATUS ERROR:', error)
-    throw error
+    throw new Error('Failed to update payment status')
   }
 
-  // If payment was successful, notify the user
+  // 3. Notifications and Revalidation
   if (status === 'paid') {
      await createNotification({
        user_id: data.user_id,
@@ -39,7 +44,6 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
        type: 'payment'
      })
 
-     // Notify the owner as well
      const { data: bookingData } = await supabase
        .from('bookings')
        .select('property:properties(owner_id, name)')
@@ -59,6 +63,7 @@ export async function updatePaymentStatus(paymentId: string, status: PaymentStat
   revalidatePath(`/payments/success/${paymentId}`)
   revalidatePath(`/bookings/${data.booking_id}`)
   revalidatePath('/owner/dashboard')
+  revalidatePath('/admin/dashboard')
 
   return data
 }

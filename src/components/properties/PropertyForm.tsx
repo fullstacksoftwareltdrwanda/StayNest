@@ -27,6 +27,8 @@ export function PropertyForm({ property }: PropertyFormProps) {
     country: property?.country || '',
     city: property?.city || '',
     address: property?.address || '',
+    latitude: property?.latitude || null,
+    longitude: property?.longitude || null,
     main_image_url: property?.main_image_url || '',
     images: property?.images || [],
   } as any)
@@ -150,6 +152,27 @@ export function PropertyForm({ property }: PropertyFormProps) {
           placeholder="e.g. KN 3 Rd, Kigali"
           required
         />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Latitude"
+            name="latitude"
+            type="number"
+            step="any"
+            value={formData.latitude === null ? '' : formData.latitude}
+            onChange={handleChange}
+            placeholder="e.g. -1.9441"
+          />
+          <Input
+            label="Longitude"
+            name="longitude"
+            type="number"
+            step="any"
+            value={formData.longitude === null ? '' : formData.longitude}
+            onChange={handleChange}
+            placeholder="e.g. 30.0619"
+          />
+        </div>
 
         <Button type="submit" className="w-full py-6 text-lg" disabled={loading}>
           {loading ? (

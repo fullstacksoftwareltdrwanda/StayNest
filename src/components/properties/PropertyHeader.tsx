@@ -17,43 +17,63 @@ export function PropertyHeader({ name, address, city, country, imageUrl, type }:
   const { t } = useSettings()
 
   return (
-    <div className="bg-[var(--background)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-          <div>
-            <div className="flex items-center space-x-3 mb-4">
-               <span className="px-3 py-1 bg-[var(--primary)]/5 text-[var(--primary)] rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border border-[var(--primary)]/10">
+    <section className="bg-[var(--background)] animate-fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 sm:pt-16 sm:pb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10 sm:mb-12">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex items-center gap-3">
+               <span className="px-4 py-1.5 bg-[var(--primary)]/5 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[var(--primary)]/10 shadow-sm">
                 {t(`common.property_types.${type.toLowerCase()}`)}
               </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Verified Listing</span>
             </div>
-            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight mb-4">
+            
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tighter leading-[0.95] text-balance">
               {name}
             </h1>
-            <div className="flex items-center text-gray-500 text-sm md:text-lg font-medium">
-              <MapPin className="w-4 h-4 md:w-5 md:h-5 mr-2 text-[var(--accent)]" />
-              <span>{address}, {city}, {country}</span>
+            
+            <div className="flex items-center text-gray-600 text-base sm:text-xl font-bold tracking-tight">
+              <div className="w-10 h-10 rounded-2xl bg-[var(--accent)]/10 flex items-center justify-center mr-4 shrink-0">
+                <MapPin className="w-5 h-5 text-[var(--accent)]" />
+              </div>
+              <span className="opacity-80 leading-tight">{address}, {city}, {country}</span>
             </div>
           </div>
         </div>
 
-        <div className="relative h-64 sm:h-[400px] md:h-[500px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl border border-gray-100">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={name}
-              fill
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-200">
-              <Home className="w-32 h-32" />
+        {/* Hero Gallery Container */}
+        <div className="relative group overflow-hidden rounded-[2.5rem] sm:rounded-[3.5rem] bg-[var(--warm-gray)]/30 border border-white/60 shadow-2xl transition-all duration-700">
+          <div className="relative aspect-[16/10] sm:aspect-[21/9] w-full">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                className="object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-[var(--primary)]/10">
+                <Home className="w-24 h-24 sm:w-32 sm:h-32 mb-4" />
+                <span className="text-xs font-black uppercase tracking-widest">No Image Available</span>
+              </div>
+            )}
+            
+            {/* Elegant Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-700" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/20 to-transparent" />
+            
+            {/* Floating Interaction Button (Placeholder for 'View Gallery' or similar) */}
+            <div className="absolute bottom-8 right-8 animate-slide-up opacity-0 group-hover:opacity-100 transition-all duration-500">
+              <button className="px-8 py-4 bg-white/90 backdrop-blur-md rounded-full text-xs font-black text-[var(--primary)] uppercase tracking-widest shadow-2xl hover:bg-white hover:scale-105 transition-all">
+                {t('property.view_photos') || 'Explore Full Gallery'}
+              </button>
             </div>
-          )}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

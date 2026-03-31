@@ -1,140 +1,219 @@
 import { requireRole } from '@/lib/auth/requireRole'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/shared/Button'
+import { Card, CardHeader, CardContent } from '@/components/shared/Card'
 import Link from 'next/link'
+import { Calendar, Heart, ShieldCheck, Sparkles, ArrowRight, LayoutDashboard, UserCheck, Mail } from 'lucide-react'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 export default async function GuestDashboard() {
   const { profile } = await requireRole(['guest', 'owner', 'admin'])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8">
-        <div className="flex items-center space-x-5">
-          <div className="w-20 h-20 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] rounded-3xl flex items-center justify-center text-white text-3xl font-black shadow-2xl shadow-[var(--primary)]/20">
-            {profile.full_name.charAt(0)}
-          </div>
-          <div>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-2">
-              Welcome back, {profile.full_name.split(' ')[0]}!
-            </h1>
-            <div className="flex items-center space-x-3">
-              <span className="text-gray-500 font-medium">{profile.email}</span>
-              <span className="w-1.5 h-1.5 bg-gray-200 rounded-full"></span>
-              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                profile.role === 'owner' 
-                  ? 'bg-[var(--primary)]/10 text-[var(--primary)] border-[var(--primary)]/20' 
-                  : 'bg-[var(--accent)]/10 text-[var(--accent-dark)] border-[var(--accent)]/20'
-              }`}>
-                {profile.role === 'owner' ? 'Active Host Account' : 'Active Guest Account'}
-              </span>
+    <div className="min-h-screen bg-[var(--background)] pb-24 sm:pb-32 animate-fade-in">
+      {/* ─── Dashboard Header ─────────────────── */}
+      <div className="bg-white/80 backdrop-blur-xl border-b border-[var(--warm-gray)] py-12 sm:py-16 mb-12 sm:mb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
+            <div className="flex items-center gap-6 sm:gap-8 group">
+              <div className="relative">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] rounded-[2rem] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-[var(--primary)]/20 transition-transform group-hover:scale-105 duration-500">
+                  {profile.full_name.charAt(0)}
+                </div>
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--accent)] rounded-2xl flex items-center justify-center border-4 border-white shadow-lg text-white">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tighter leading-none">
+                    {profile.full_name.split(' ')[0]}'s Hub
+                  </h1>
+                  <span className="animate-pulse duration-[3s]">
+                    <Sparkles className="w-5 h-5 text-[var(--accent)]" />
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2 text-gray-400 font-bold text-sm">
+                    <Mail className="w-4 h-4 text-gray-300" />
+                    {profile.email}
+                  </div>
+                  <span className="w-1.5 h-1.5 bg-[var(--warm-gray)] rounded-full hidden sm:block"></span>
+                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm ${
+                    profile.role === 'owner' 
+                      ? 'bg-[var(--primary)]/5 text-[var(--primary)] border-[var(--primary)]/10' 
+                      : 'bg-[var(--accent)]/5 text-[var(--accent)] border-[var(--accent)]/10'
+                  }`}>
+                    {profile.role === 'owner' ? 'Curated Host Account' : 'Verified Guest Account'}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {profile.role === 'owner' && (
+              <Link href="/owner/dashboard">
+                <Button 
+                  size="lg" 
+                  variant="primary"
+                  className="h-16 sm:h-20 px-10 rounded-2xl sm:rounded-[1.5rem] font-black text-xs sm:text-sm uppercase tracking-[0.2em] shadow-2xl shadow-[var(--primary)]/10 group overflow-hidden"
+                  leftIcon={<LayoutDashboard className="w-5 h-5 group-hover:rotate-12 transition-transform" />}
+                >
+                  Host Command Center
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
-        
-        {profile.role === 'owner' && (
-          <Link href="/owner/dashboard">
-            <Button size="lg" className="rounded-2xl px-10 py-7 font-black text-lg shadow-xl shadow-[var(--primary)]/10 hover:scale-105 transition-all bg-[var(--primary)]">
-              Switch to Hosting
-            </Button>
-          </Link>
-        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-[var(--primary)]/10 rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-[var(--primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">My Bookings</h3>
-              <p className="text-gray-500 text-sm mb-6 leading-relaxed">Manage your upcoming trips and travel history.</p>
-              <Link href="/bookings">
-                <Button variant="outline" className="w-full rounded-xl py-5 font-bold hover:bg-[var(--primary)]/5">View History</Button>
-              </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+          
+          {/* ─── Main Content Areas (8/12 = 66%) ──────────────── */}
+          <div className="lg:col-span-8 space-y-12">
+            
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <Card interactive padding="lg" className="rounded-[2.5rem] border-white/60 shadow-xl shadow-black/[0.02] max-w-lg mx-auto w-full">
+                <CardHeader 
+                  title="My Bookings"
+                  subtitle="Your personal travels"
+                  icon={<Calendar className="w-5 h-5 text-[var(--primary)]" />}
+                />
+                <CardContent className="space-y-6">
+                  <p className="text-gray-500 font-medium text-sm leading-relaxed opacity-80">
+                    Efficiently manage your upcoming experiences and past adventures.
+                  </p>
+                  <Link href="/bookings" className="block">
+                    <Button variant="outline" className="w-full h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest border-[var(--warm-gray)] hover:bg-[var(--primary)]/5">
+                      View Reservation History
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+
+              <Card interactive padding="lg" className="rounded-[2.5rem] border-white/60 shadow-xl shadow-black/[0.02] max-w-lg mx-auto w-full">
+                <CardHeader 
+                  title="Wishlist"
+                  subtitle="Coming Soon"
+                  icon={<Heart className="w-5 h-5 text-rose-400" />}
+                />
+                <CardContent className="space-y-6">
+                  <p className="text-gray-500 font-medium text-sm leading-relaxed opacity-80">
+                    Your collection of dream stays. Heart your favorites to see them here.
+                  </p>
+                  <Button disabled variant="outline" className="w-full h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest opacity-50 border-dashed">
+                    Curate Your Favorites
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300">
-              <div className="w-12 h-12 bg-[var(--accent)]/10 rounded-2xl flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Saved Places</h3>
-              <p className="text-gray-500 text-sm mb-6 leading-relaxed">Quickly access the properties you've liked most.</p>
-              <Button variant="outline" className="w-full rounded-xl py-5 font-bold" disabled>Coming Soon</Button>
-            </div>
+            {/* Verification Status Card */}
+            <Card padding="lg" className="rounded-[2.5rem] bg-white border-white/60 shadow-xl shadow-black/[0.02]">
+              <CardHeader 
+                title="Account Verification"
+                subtitle="Secure your experience"
+                icon={<ShieldCheck className="w-5 h-5 text-[var(--primary)]" />}
+              />
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-6 bg-[var(--warm-gray)]/30 rounded-[2rem] border border-[var(--warm-gray)]/40 group hover:bg-white transition-colors duration-500">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[var(--primary)] flex items-center justify-center shadow-lg shadow-[var(--primary)]/20">
+                      <ShieldCheck className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <span className="block font-black text-gray-900 tracking-tight">Email Verified</span>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Connected: {profile.email}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest bg-[var(--primary)]/10 px-4 py-1.5 rounded-full">ACTIVE</span>
+                </div>
+
+                <div className="flex items-center justify-between p-6 bg-white rounded-[2rem] border-2 border-dashed border-[var(--warm-gray)]/60 opacity-60 hover:opacity-100 transition-all cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[var(--accent)]/10 transition-colors">
+                      <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-[var(--accent)]" />
+                    </div>
+                    <div>
+                      <span className="block font-black text-gray-400 group-hover:text-gray-900 transition-colors tracking-tight">Identity Verification</span>
+                      <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Enhanced Security</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest p-0 group-hover:translate-x-2 transition-transform">
+                    Verify Now <ArrowRight className="w-3 h-3 ml-2" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="bg-white p-10 rounded-[2rem] border border-gray-100 shadow-sm">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Account Verification</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-[var(--primary)] rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                    </svg>
+          {/* ─── Sidebar Hosting Section (4/12 = 33%) ─────────── */}
+          <div className="lg:col-span-4 space-y-8">
+            {profile.role === 'owner' ? (
+              <Card padding="none" variant="default" className="rounded-[2.5rem] sm:rounded-[3.5rem] border-white/60 shadow-2xl shadow-black/[0.04] h-full overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--primary)]/5 rounded-full -mr-24 -mt-24 blur-3xl transition-transform group-hover:scale-110 duration-700" />
+                
+                <div className="p-10 sm:p-14 h-full flex flex-col justify-between min-h-[400px] relative z-10">
+                  <div className="space-y-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[var(--primary)]/10 shadow-sm animate-pulse-glow">
+                      <Sparkles className="w-3 h-3" />
+                      Professional Host
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tighter leading-tight">
+                      Elevate your <br /> guest experience
+                    </h3>
+                    <p className="text-gray-500 font-medium text-lg leading-relaxed text-balance opacity-80">
+                      Manage your properties with sophisticated tools and professional insights.
+                    </p>
                   </div>
-                  <span className="font-bold text-gray-700">Email Verified</span>
+                  
+                  <Link href="/owner/properties" className="mt-12">
+                    <Button 
+                      size="lg" 
+                      className="w-full h-18 sm:h-20 rounded-2xl sm:rounded-[1.5rem] bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[var(--primary)]/20 active:scale-95 group/btn"
+                      rightIcon={<ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform duration-500" />}
+                    >
+                      Manage Catalog
+                    </Button>
+                  </Link>
                 </div>
-                <span className="text-xs text-gray-400 font-medium tracking-tight">COMPLETED</span>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl opacity-60">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                  <span className="font-bold text-gray-400">Identity Verification</span>
+              </Card>
+            ) : (
+              <Card padding="none" variant="default" className="rounded-[2.5rem] sm:rounded-[3.5rem] border-white/60 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] text-white shadow-2xl shadow-[var(--primary)]/30 h-full overflow-hidden relative group">
+                <div className="absolute inset-0">
+                  <ImigongoPattern variant="dark" opacity={0.3} className="absolute inset-0 w-full h-full" />
                 </div>
-                <span className="text-xs text-[var(--primary)] font-bold uppercase tracking-widest cursor-pointer hover:underline">Start Now</span>
-              </div>
-            </div>
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl transition-transform group-hover:scale-110 duration-700" />
+                
+                <div className="p-10 sm:p-14 h-full flex flex-col justify-between min-h-[400px] relative z-10">
+                  <div className="space-y-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-white/10 shadow-lg">
+                      <Sparkles className="w-3 h-3" />
+                      Host Potential
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight text-white shadow-sm">
+                      Monetize your <br /> extra space
+                    </h3>
+                    <p className="text-white/80 font-medium text-lg leading-relaxed text-balance">
+                      Transition seamlessly to a host account and start earning on your terms today.
+                    </p>
+                  </div>
+                  
+                  <form action="/api/auth/become-host" method="POST" className="mt-12">
+                    <Button 
+                      size="lg" 
+                      className="w-full h-18 sm:h-20 rounded-2xl sm:rounded-[1.5rem] bg-[var(--accent)] text-[var(--primary)] hover:bg-[var(--accent-dark)] hover:text-white font-black uppercase tracking-[0.2em] shadow-2xl active:scale-95 border-none group/btn"
+                      rightIcon={<ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform duration-500" />}
+                    >
+                      Unlock Host Mode
+                    </Button>
+                  </form>
+                </div>
+              </Card>
+            )}
           </div>
-        </div>
-
-        <div className="space-y-8">
-          {profile.role === 'owner' ? (
-            <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-xl relative overflow-hidden group h-full">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl transition-transform group-hover:scale-110" />
-              <div className="relative z-10 flex flex-col justify-between h-full min-h-[300px]">
-                <div>
-                  <div className="inline-block px-3 py-1 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">
-                    Professional Host
-                  </div>
-                  <h3 className="text-3xl font-black mb-4 leading-tight text-gray-900">Manage your business</h3>
-                  <p className="text-gray-500 text-lg leading-relaxed mb-10">
-                    Add new properties, manage rooms, and track your bookings in one place.
-                  </p>
-                </div>
-                <Link href="/owner/properties">
-                  <Button size="lg" className="w-full bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] font-black rounded-2xl py-8 text-xl shadow-xl shadow-[var(--primary)]/10 transition-all hover:-translate-y-1">
-                    Manage Properties
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] p-10 rounded-[2.5rem] text-white shadow-2xl shadow-[var(--primary)]/20 relative overflow-hidden group h-full">
-              <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-48 h-48 bg-white/10 rounded-full blur-3xl transition-transform group-hover:scale-110" />
-              
-              <div className="relative z-10 h-full flex flex-col justify-between min-h-[300px]">
-                <div>
-                  <div className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">
-                    Host Opportunity
-                  </div>
-                  <h3 className="text-3xl font-black mb-4 leading-tight">Ready to host your space?</h3>
-                  <p className="text-white/80 text-lg leading-relaxed mb-10">
-                    Switch to host mode and start earning from your property. It's fast, free, and secure.
-                  </p>
-                </div>
-                <form action="/api/auth/become-host" method="POST">
-                  <Button size="lg" className="w-full bg-[var(--accent)] text-[var(--primary)] hover:bg-[var(--accent-dark)] hover:text-white border-none font-black rounded-2xl py-8 text-xl shadow-xl transition-all hover:-translate-y-1">
-                    Become a Host
-                  </Button>
-                </form>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

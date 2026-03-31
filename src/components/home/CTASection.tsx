@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 export function CTASection() {
   const { t } = useSettings()
@@ -11,6 +12,7 @@ export function CTASection() {
     <section className="relative overflow-hidden rounded-3xl mx-4 sm:mx-0">
       {/* Background */}
       <div className="absolute inset-0 bg-[var(--primary)]" />
+      <ImigongoPattern variant="dark" opacity={0.18} className="absolute inset-0 w-full h-full" />
       <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--primary-light)] rounded-full opacity-30 blur-3xl translate-x-1/3 -translate-y-1/3" />
       <div className="absolute bottom-0 left-0 w-60 h-60 bg-[var(--accent)] rounded-full opacity-10 blur-3xl -translate-x-1/3 translate-y-1/3" />
 

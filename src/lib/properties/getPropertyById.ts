@@ -6,7 +6,7 @@ export async function getPropertyById(id: string) {
   
   const { data, error } = await supabase
     .from('properties')
-    .select('*')
+    .select('id, owner_id, name, type, description, country, city, address, main_image_url, status, amenities, rules, created_at, updated_at')
     .eq('id', id)
     .single()
 

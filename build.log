@@ -1,0 +1,24 @@
+
+> urugostay@0.1.0 build
+> next build
+
+▲ Next.js 16.2.1 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.5s
+  Running TypeScript ...
+Failed to type check.
+
+.next/dev/types/validator.ts:431:1
+Type error: Unexpected keyword or identifier.
+
+  [90m429 |[0m   [36mtype[0m __Unused = __Check
+  [90m430 |[0m }
+[31m[1m>[0m [90m431 |[0m oard[32m">> = Specific[0m
+  [90m    |[0m [31m[1m^[0m
+  [90m432 |[0m [32m  const handler = {} as typeof import("[0m..[35m/../[0m..[35m/src/app[0m/(guest)/dashboard/layout.js[32m")[0m
+  [90m433 |[0m [32m  type __Check = __IsExpected<typeof handler>[0m
+  [90m434 |[0m [32m  // @ts-ignore[0m
+Next.js build worker exited with code: 1 and signal: null

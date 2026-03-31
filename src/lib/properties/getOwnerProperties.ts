@@ -11,7 +11,7 @@ export async function getOwnerProperties() {
 
   const { data, error } = await supabase
     .from('properties')
-    .select('*')
+    .select('id, owner_id, name, type, description, country, city, address, main_image_url, status, created_at, updated_at')
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
 

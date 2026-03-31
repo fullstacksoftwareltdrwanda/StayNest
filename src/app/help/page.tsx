@@ -10,6 +10,7 @@ import {
   Smartphone
 } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
+import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
 
 export default function HelpPage() {
   const { t } = useSettings()
@@ -92,7 +93,9 @@ export default function HelpPage() {
         </div>
 
         {/* Contact Support */}
-        <div className="mt-20 bg-[var(--primary)] rounded-3xl p-10 text-center text-white">
+        <div className="mt-20 bg-[var(--primary)] rounded-3xl p-10 text-center text-white relative overflow-hidden">
+          <ImigongoPattern variant="dark" opacity={0.2} className="absolute inset-0 w-full h-full" />
+          <div className="relative z-10">
           <HelpCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <h2 className="text-2xl font-black mb-2">{t('help.still_help')}</h2>
           <p className="text-white/70 mb-8 max-w-md mx-auto">
@@ -105,6 +108,7 @@ export default function HelpPage() {
             <button className="px-8 py-3 bg-white/10 text-white font-black rounded-xl hover:bg-white/20 transition-all border border-white/20">
               {t('help.live_chat')}
             </button>
+          </div>
           </div>
         </div>
       </div>
