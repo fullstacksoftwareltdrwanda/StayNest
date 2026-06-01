@@ -59,36 +59,36 @@ export default function MyBookingsPage() {
   return (
     <div className="bg-[var(--background)] min-h-screen pb-20 sm:pb-28 animate-fade-in">
       {/* ─── Premium Header ────────────────────── */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-gray-100 py-12 sm:py-16 md:py-20 mb-12 sm:mb-16">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-gray-100 py-8 sm:py-10 mb-8 sm:mb-10">
         <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
-            <div className="space-y-6 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[var(--primary)]/5 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[var(--primary)]/10 animate-slide-up">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--primary)]/5 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-widest border border-[var(--primary)]/10">
                 <Sparkles className="w-3 h-3 text-[var(--accent)]" />
-                {t('booking.my_bookings_title') || 'StayNest Concierge'}
+                {t('booking.my_bookings_title') || 'My Reservations'}
               </div>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-gray-900 tracking-tighter leading-[0.85] text-balance animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                Your Rwandan <br /> <span className="text-gradient animate-gold-shimmer italic font-light">Odysseys</span>.
+              <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tighter leading-tight">
+                Your <span className="text-[var(--primary)]">Odysseys</span>.
               </h1>
-              <p className="text-gray-500 font-medium text-lg sm:text-xl leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                {t('booking.my_bookings_subtitle') || 'Explore your curation of verified experiences and upcoming adventures across the Heart of Africa.'}
+              <p className="text-gray-500 font-medium text-sm leading-relaxed max-w-md">
+                {t('booking.my_bookings_subtitle') || 'All your upcoming and past experiences in one place.'}
               </p>
             </div>
 
-            {/* KPI Summary Cards */}
-            <div className="grid grid-cols-2 gap-4 w-full md:w-auto animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                <div className="p-6 rounded-[2rem] bg-white border border-gray-100 shadow-sm flex flex-col justify-between h-32 w-full md:w-44">
-                   <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Total Stays</p>
-                   <p className="text-4xl font-black text-gray-900 tracking-tighter tabular-nums leading-none">
-                     {bookings.filter(b => b.status === 'completed').length || 0}
-                   </p>
-                </div>
-                <div className="p-6 rounded-[2rem] bg-[var(--primary)] text-white shadow-xl shadow-[var(--primary)]/20 flex flex-col justify-between h-32 w-full md:w-44">
-                   <p className="text-[9px] font-black text-white/50 uppercase tracking-widest leading-none">Upcoming</p>
-                   <p className="text-gradient animate-gold-shimmer text-4xl font-black tracking-tighter tabular-nums leading-none">
-                     {bookings.filter(b => b.status === 'confirmed').length || 0}
-                   </p>
-                </div>
+            {/* KPI chips */}
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="px-5 py-3 rounded-2xl bg-white border border-gray-100 shadow-sm text-center min-w-[80px]">
+                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1.5">Completed</p>
+                <p className="text-2xl font-black text-gray-900 tracking-tighter tabular-nums">
+                  {bookings.filter(b => b.status === 'completed').length}
+                </p>
+              </div>
+              <div className="px-5 py-3 rounded-2xl bg-[var(--primary)] text-white shadow-lg shadow-[var(--primary)]/20 text-center min-w-[80px]">
+                <p className="text-[9px] font-black text-white/60 uppercase tracking-widest leading-none mb-1.5">Upcoming</p>
+                <p className="text-2xl font-black tracking-tighter tabular-nums">
+                  {bookings.filter(b => b.status === 'confirmed').length}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function MyBookingsPage() {
 
       <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-10">
         {/* Tabs */}
-        <div className="flex items-center gap-8 mb-12 border-b border-gray-100 overflow-x-auto pb-px scrollbar-hide">
+        <div className="flex items-center gap-8 mb-8 border-b border-gray-100 overflow-x-auto pb-px scrollbar-hide">
           {[
             { id: 'upcoming', label: 'Upcoming' },
             { id: 'completed', label: 'Completed' },

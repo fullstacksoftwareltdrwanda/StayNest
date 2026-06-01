@@ -18,10 +18,22 @@ export const propertySchema = z.object({
   is_whole_unit: z.boolean().default(false),
   offers_monthly: z.boolean().default(false),
   offers_daily: z.boolean().default(true),
+  offers_hourly: z.boolean().default(false),
   monthly_price: z.number().optional().nullable(),
   daily_price: z.number().optional().nullable(),
+  hourly_price: z.number().optional().nullable(),
   max_guests: z.number().int().min(1).default(1),
   amenities: z.array(z.string()).optional().default([]),
+  house_rules: z.object({
+    pets_allowed: z.boolean().default(false),
+    smoking_allowed: z.boolean().default(false),
+    parties_allowed: z.boolean().default(false),
+    cameras_on_premises: z.boolean().default(false),
+    quiet_hours: z.boolean().default(false),
+    check_in_from: z.string().optional(),
+    check_out_by: z.string().optional(),
+    additional_rules: z.string().optional(),
+  }).optional(),
 })
 
 export const roomSchema = z.object({
@@ -49,8 +61,10 @@ export const bookingSchema = z.object({
   guests: z.number().int().min(1),
   total_price: z.number().positive(),
   currency: z.string().length(3).default('USD'),
-  converted_price: z.number().optional()
-}).refine((data) => new Date(data.check_out) > new Date(data.check_in), {
+  converted_price: z.number().optional(),
+  pricing_unit: z.enum(['night', 'hour', 'month']).default('night'),
+  booking_hours: z.number().int().positive().optional(),
+}).refine((data) => new Date(data.check_out) >= new Date(data.check_in), {
   message: 'Check-out date must be after check-in date',
   path: ['check_out'],
 })

@@ -1,3 +1,5 @@
+import { PricingUnit } from './property'
+
 export interface SearchFilters {
   destination?: string;
   type?: string;
@@ -26,4 +28,9 @@ export interface PropertySearchResult {
   review_count: number;
   amenities?: string[];
   is_favorited?: boolean;
+  // Pricing meta — used to display correct unit labels on cards
+  pricing_unit: PricingUnit;
+  offers_daily: boolean;
+  offers_monthly: boolean;
+  offers_hourly: boolean;
 }

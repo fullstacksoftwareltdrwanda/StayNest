@@ -5,20 +5,92 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { registerUser } from '@/app/(auth)/register/actions'
 import { signIn } from 'next-auth/react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { LoadingSpinner, UrugostayLoader } from '@/components/shared/loading-spinner'
-import { AlertCircle, CheckCircle, UserPlus, Users, Home, Star } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, Check } from 'lucide-react'
 import { useSettings } from '@/context/SettingsContext'
 import { toast } from 'sonner'
 import { ImigongoPattern } from '@/components/shared/imigongo-pattern'
+import { cn } from '@/utils/cn'
 
 interface RegisterFormProps {
-  stats: {
-    totalUsers: number
-    totalProperties: number
-    averageRating: number
-  }
+  stats: { totalUsers: number; totalProperties: number; averageRating: number }
+}
+
+// ── Shared minimal input component ─────────────────────────────────────────
+function ArchInput({
+  label,
+  name,
+  type,
+  placeholder,
+  autoComplete,
+  required,
+  minLength,
+  dark,
+}: {
+  label: string
+  name: string
+  type?: string
+  placeholder?: string
+  autoComplete?: string
+  required?: boolean
+  minLength?: number
+  dark?: boolean
+}) {
+  const [show, setShow] = useState(false)
+  const isPassword = type === 'password'
+  const inputType = isPassword ? (show ? 'text' : 'password') : (type || 'text')
+
+  const labelClass = dark
+    ? 'text-[9px] font-black text-white/40 uppercase tracking-[0.35em]'
+    : 'text-[9px] font-black text-gray-400/80 uppercase tracking-[0.35em]'
+
+  const inputClass = dark
+    ? 'w-full bg-transparent border-0 border-b-2 border-white/15 py-3 pr-10 text-sm font-medium text-white placeholder:text-white/20 focus:outline-none focus:border-[var(--accent)] transition-colors duration-300 peer'
+    : 'w-full bg-transparent border-0 border-b-2 border-gray-200 py-3 pr-10 text-sm font-medium text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-[var(--accent)] transition-colors duration-300 peer'
+
+  const lineClass = 'absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-[var(--accent-dark)] to-[var(--accent-light)] transition-all duration-500 peer-focus:w-full'
+
+  return (
+    <div className="space-y-2 group">
+      <label className={labelClass}>{label}</label>
+      <div className="relative">
+        <input
+          name={name}
+          type={inputType}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          required={required}
+          minLength={minLength}
+          className={inputClass}
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShow(v => !v)}
+            className={cn('absolute right-0 bottom-3 transition-colors', dark ? 'text-white/25 hover:text-white/60' : 'text-gray-300 hover:text-gray-600')}
+            tabIndex={-1}
+          >
+            {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          </button>
+        )}
+        <div className={lineClass} />
+      </div>
+    </div>
+  )
+}
+
+// ── Benefit row ─────────────────────────────────────────────────────────────
+function Benefit({ n, text, delay }: { n: string; text: string; delay: string }) {
+  return (
+    <div
+      className="flex items-start gap-4 opacity-0 animate-reveal-up"
+      style={{ animationDelay: delay, animationFillMode: 'forwards' }}
+    >
+      <span className="text-[9px] font-black text-[var(--accent)]/60 uppercase tracking-widest pt-0.5 shrink-0">{n}</span>
+      <div className="h-px w-4 bg-[var(--accent)]/20 mt-2 shrink-0" />
+      <p className="text-sm font-medium text-white/70 leading-snug">{text}</p>
+    </div>
+  )
 }
 
 export function RegisterForm({ stats }: RegisterFormProps) {
@@ -26,27 +98,24 @@ export function RegisterForm({ stats }: RegisterFormProps) {
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect')
   const { t } = useSettings()
-  
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setLoading(true)
-
-    const formData = new FormData(event.currentTarget)
-    const fullName = formData.get('fullName') as string
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
+    const fd = new FormData(e.currentTarget)
+    const fullName = fd.get('fullName') as string
+    const email = fd.get('email') as string
+    const password = fd.get('password') as string
 
     if (!fullName || !email || !password) {
-      toast.error(t('auth.errors.fill_all') || 'Please fill in all fields')
+      toast.error('Please fill in all fields')
       setLoading(false)
       return
     }
-
     if (password.length < 6) {
-      toast.error(t('auth.errors.password_length') || 'Password must be at least 6 characters')
+      toast.error('Password must be at least 6 characters')
       setLoading(false)
       return
     }
@@ -54,186 +123,268 @@ export function RegisterForm({ stats }: RegisterFormProps) {
     try {
       const result = await registerUser({ fullName, email, password })
       if (!result.success) throw new Error('Registration failed')
-      
-      toast.success(t('auth.success.title') || 'Account created!')
+      toast.success('Account created!')
       setSuccess(true)
-      
-      // Auto-login
-      const signInResult = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      setTimeout(() => {
-        if (signInResult?.error) {
-          router.push('/login')
-        } else {
-          router.push('/')
-        }
-      }, 2000)
-    } catch (signUpError: any) {
-      console.error('[SIGNUP ERROR]', signUpError)
-      toast.error(signUpError.message || t('common.error'))
+      const signInResult = await signIn('credentials', { email, password, redirect: false })
+      setTimeout(() => router.push(signInResult?.error ? '/login' : '/'), 2200)
+    } catch (err: any) {
+      toast.error(err.message || 'Something went wrong')
       setLoading(false)
     }
   }
 
   return (
-    <div className="h-screen overflow-hidden flex bg-[var(--background)]">
-      {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 h-full bg-gradient-to-br from-[var(--primary-dark)] via-[var(--primary)] to-[var(--primary-light)] relative overflow-hidden flex-col justify-between p-12 xl:p-16">
-        {/* Imigongo heritage pattern */}
-        <ImigongoPattern variant="dark" opacity={0.2} className="absolute inset-0 w-full h-full" />
-        {/* Animated orbs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 -right-20 w-80 h-80 bg-[var(--accent)]/10 rounded-full animate-float" style={{ animationDelay: '0s' }} />
-          <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-[var(--primary-light)]/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }} />
-          <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-[var(--accent)]/5 rounded-full animate-float" style={{ animationDelay: '3s' }} />
-        </div>
+    <div className="min-h-screen overflow-y-auto bg-[#0A1E16] flex items-center justify-center py-8 px-4 relative">
 
-        <div className="relative z-10 animate-fade-in">
-          <Link href="/" className="text-3xl font-black text-white tracking-tight">
-            Urugo<span className="text-[var(--accent)]">stay</span>
-          </Link>
-        </div>
+      {/* Full-screen Imigongo backdrop */}
+      <ImigongoPattern variant="dark" opacity={0.12} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-        <div className="relative z-10 space-y-6 xl:space-y-8 animate-slide-up" style={{ animationDelay: '0.2s', animationFillMode: 'backwards' }}>
-          {[
-            t('auth.benefits.feature_stays'),
-            t('auth.benefits.feature_secure'),
-            t('auth.benefits.feature_reviews')
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-4 group animate-fade-in"
-              style={{ animationDelay: `${0.3 + i * 0.15}s`, animationFillMode: 'backwards' }}
-            >
-              <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-[var(--accent)]/20 group-hover:scale-110 transition-all">
-                <CheckCircle className="w-5 h-5 text-[var(--accent)]" />
-              </div>
-              <p className="text-white font-bold text-base xl:text-lg tracking-tight">{item}</p>
-            </div>
-          ))}
-        </div>
+      {/* Ambient glow in center */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(191,160,84,0.04)_0%,transparent_70%)]" />
 
-        <div className="relative z-10 flex gap-8 xl:gap-12 animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'backwards' }}>
-          {[
-            { icon: Users, value: stats.totalUsers.toLocaleString(), label: 'Total Users' },
-            { icon: Home, value: stats.totalProperties.toLocaleString(), label: 'Properties' },
-            { icon: Star, value: stats.averageRating > 0 ? stats.averageRating : '0.0', label: 'Avg Rating' },
-          ].map(({ icon: Icon, value, label }) => (
-            <div key={label} className="group">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-[var(--accent)]/20 transition-all group-hover:scale-110">
-                  <Icon className="w-4 h-4 text-[var(--accent)]" />
+      {/* Vertical scan line across full screen */}
+      <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/15 to-transparent pointer-events-none animate-scan-line" />
+
+      {/* ── The Card ──────────────────────────────────────────────── */}
+      <div
+        className="relative z-10 w-full max-w-4xl flex flex-col lg:flex-row overflow-hidden opacity-0 animate-reveal-up"
+        style={{
+          animationDelay: '100ms',
+          animationFillMode: 'forwards',
+          borderRadius: '2rem',
+          boxShadow: '0 0 0 1px rgba(191,160,84,0.15), 0 40px 100px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3)',
+        }}
+      >
+
+        {/* ══ LEFT HALF — Dark green, editorial benefits ══ */}
+        <div className="relative lg:w-[45%] bg-[#0F2F23] overflow-hidden flex flex-col">
+          {/* Imigongo inside left panel */}
+          <ImigongoPattern variant="dark" opacity={0.20} className="absolute inset-0 w-full h-full pointer-events-none" />
+
+          {/* Inner depth gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0A1E16]/50 via-transparent to-[#0A1E16]/80" />
+
+          {/* Gold top accent bar */}
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent" />
+
+          <div className="relative z-10 flex flex-col h-full p-8 lg:p-10 xl:p-12">
+            {/* Logo */}
+            <div className="mb-auto">
+              <Link href="/" className="flex items-center gap-2.5 mb-8 lg:mb-14">
+                <div className="w-7 h-7 bg-[var(--accent)] rounded-lg flex items-center justify-center shadow-lg shadow-[var(--accent)]/20">
+                  <span className="text-[var(--primary)] font-black text-[9px]">SN</span>
                 </div>
-                <p className="text-2xl xl:text-3xl font-black text-white">{value}</p>
-              </div>
-              <p className="text-white/30 text-[9px] font-bold uppercase tracking-[0.2em]">{label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+                <span className="text-white font-black text-base tracking-tight">
+                  Stay<span className="text-[var(--accent)]">Nest</span>
+                </span>
+              </Link>
 
-      {/* Right panel - form */}
-      <div className="flex-1 h-full overflow-y-auto bg-[var(--warm-white)] flex flex-col justify-center py-8">
-        <div className="w-full max-w-sm mx-auto px-5 sm:px-6 animate-slide-up" style={{ animationDelay: '0.1s', animationFillMode: 'backwards' }}>
-          <div className="mb-8">
-            <Link href="/" className="text-2xl font-black text-[var(--primary)] tracking-tight lg:hidden block mb-6">
-              Urugo<span className="text-[var(--accent)]">stay</span>
-            </Link>
-            <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">
-              {t('auth.register_title')}
-            </h1>
-            <p className="text-gray-400 font-medium text-sm">
-              {t('auth.register_subtitle')}
-            </p>
+              {/* Badge */}
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/5 mb-6 opacity-0 animate-reveal-up"
+                style={{ animationDelay: '250ms', animationFillMode: 'forwards' }}
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+                <span className="text-[9px] font-black text-[var(--accent)]/80 uppercase tracking-[0.3em]">
+                  {stats.totalUsers.toLocaleString()}+ travelers
+                </span>
+              </div>
+
+              {/* Big editorial heading */}
+              <div
+                className="space-y-0 opacity-0 animate-reveal-up mb-8 lg:mb-10"
+                style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}
+              >
+                <p
+                  className="font-black text-white/30 leading-none text-sm uppercase tracking-[0.3em]"
+                  style={{ fontFamily: 'var(--font-serif)' }}
+                >
+                  Begin
+                </p>
+                <p
+                  className="font-bold text-white leading-none"
+                  style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(40px, 4vw, 56px)' }}
+                >
+                  Your
+                </p>
+                <p
+                  className="font-bold leading-none"
+                  style={{
+                    fontFamily: 'var(--font-serif)',
+                    fontSize: 'clamp(40px, 4vw, 56px)',
+                    background: 'linear-gradient(135deg, #BFA054, #D4B976)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
+                  Journey.
+                </p>
+              </div>
+
+              {/* Numbered benefits */}
+              <div className="space-y-4 lg:space-y-5">
+                <Benefit n="01" text="Handpicked luxury stays across Rwanda" delay="450ms" />
+                <Benefit n="02" text="Verified hosts, secure instant booking" delay="550ms" />
+                <Benefit n="03" text="Seamless travel from first click to check-out" delay="650ms" />
+              </div>
+            </div>
+
+            {/* Stats footer */}
+            <div
+              className="flex items-center gap-8 pt-6 mt-8 border-t border-white/5 opacity-0 animate-reveal-up"
+              style={{ animationDelay: '750ms', animationFillMode: 'forwards' }}
+            >
+              <div>
+                <p className="text-xl font-black text-white tracking-tighter tabular-nums">{stats.totalProperties}</p>
+                <p className="text-[8px] font-black text-white/25 uppercase tracking-[0.25em]">Properties</p>
+              </div>
+              <div className="w-px h-8 bg-white/8" />
+              <div>
+                <p className="text-xl font-black text-white tracking-tighter">{stats.averageRating > 0 ? stats.averageRating.toFixed(1) : '—'}</p>
+                <p className="text-[8px] font-black text-white/25 uppercase tracking-[0.25em]">Avg Rating</p>
+              </div>
+            </div>
           </div>
+        </div>
 
-          {success ? (
-            <div className="flex flex-col items-center gap-6 py-10 animate-scale-in">
-              <div className="w-20 h-20 bg-[var(--primary)]/5 rounded-[2.5rem] flex items-center justify-center text-[var(--primary)] border border-[var(--primary)]/10 shadow-xl shadow-[var(--primary)]/10 animate-pulse-glow">
-                <CheckCircle className="w-10 h-10" />
+        {/* ══ RIGHT HALF — Cream, minimal form ══ */}
+        <div className="flex-1 bg-[var(--warm-white)] flex flex-col">
+
+          {/* Gold top accent bar */}
+          <div className="h-[2px] bg-gradient-to-r from-transparent via-[var(--accent)]/40 to-transparent lg:hidden" />
+
+          <div className="flex-1 flex flex-col justify-center p-8 lg:p-10 xl:p-12">
+
+            {success ? (
+              <div className="flex flex-col items-center justify-center gap-6 py-10 text-center animate-reveal-up">
+                <div className="w-20 h-20 rounded-[2rem] bg-[var(--primary)] flex items-center justify-center shadow-xl shadow-[var(--primary)]/20">
+                  <Check className="w-10 h-10 text-[var(--accent)]" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h3
+                    className="text-2xl font-bold text-[var(--primary)] tracking-tight mb-2"
+                    style={{ fontFamily: 'var(--font-serif)' }}
+                  >
+                    Welcome to StayNest.
+                  </h3>
+                  <p className="text-sm font-medium text-gray-400">Your journey begins now.</p>
+                </div>
+                <div className="mt-2">
+                  <UrugostayLoader size="sm" />
+                </div>
               </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-black text-gray-900 mb-2">{t('auth.success.title')}</h3>
-                <p className="text-gray-500 text-sm font-medium">{t('auth.success.redirecting')}</p>
-              </div>
-              <UrugostayLoader size="sm" />
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+            ) : (
+              <div className="space-y-8 max-w-sm mx-auto w-full">
 
-              <div className="space-y-4 sm:space-y-5">
-                <Input
-                  name="fullName"
-                  label={t('auth.full_name')}
-                  type="text"
-                  placeholder="John Doe"
-                  required
-                  autoComplete="name"
-                  className="rounded-2xl border-[var(--primary)]/10 bg-white"
-                />
-
-                <Input
-                  name="email"
-                  label={t('auth.email')}
-                  type="email"
-                  placeholder="email@example.com"
-                  required
-                  autoComplete="email"
-                  className="rounded-2xl border-[var(--primary)]/10 bg-white"
-                />
-
-                <div className="space-y-2">
-                  <Input
-                    name="password"
-                    label={t('auth.password')}
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    minLength={6}
-                    autoComplete="new-password"
-                    className="rounded-2xl border-[var(--primary)]/10 bg-white"
-                  />
-                  <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1 ml-1">
-                    {t('auth.errors.password_length')}
+                <div className="space-y-1.5">
+                  <p className="text-[9px] font-black text-[var(--accent)] uppercase tracking-[0.4em]">
+                    New account
+                  </p>
+                  <h2
+                    className="text-2xl xl:text-3xl font-bold text-[var(--primary)] tracking-tight leading-tight"
+                    style={{ fontFamily: 'var(--font-serif)' }}
+                  >
+                    Create your<br /><em>profile.</em>
+                  </h2>
+                  <p className="text-xs font-medium text-gray-400 pt-0.5">
+                    Join thousands of travelers.
                   </p>
                 </div>
+
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="space-y-7">
+                    <ArchInput
+                      name="fullName"
+                      label="Full Name"
+                      type="text"
+                      placeholder="Your name"
+                      autoComplete="name"
+                      required
+                    />
+                    <ArchInput
+                      name="email"
+                      label="Email Address"
+                      type="email"
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      required
+                    />
+                    <ArchInput
+                      name="password"
+                      label="Password"
+                      type="password"
+                      placeholder="Min. 6 characters"
+                      autoComplete="new-password"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={cn(
+                      'w-full py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.35em] transition-all active:scale-[0.98] flex items-center justify-center gap-3',
+                      loading
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-[var(--primary)] text-white shadow-xl shadow-[var(--primary)]/20 hover:bg-[var(--primary-light)] hover:shadow-[var(--primary)]/30'
+                    )}
+                  >
+                    {loading ? (
+                      <>
+                        <LoadingSpinner size="sm" label="" />
+                        Creating account…
+                      </>
+                    ) : (
+                      <>
+                        Begin Your Journey
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </form>
+
+                <p className="text-center text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                  Have an account?{' '}
+                  <Link
+                    href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login'}
+                    className="text-[var(--primary)] hover:text-[var(--accent)] transition-colors underline underline-offset-4 decoration-[var(--accent)]/30"
+                  >
+                    Sign in
+                  </Link>
+                </p>
               </div>
+            )}
+          </div>
 
-              <Button
-                type="submit"
-                className="w-full h-12 sm:h-14 rounded-2xl text-sm font-black gap-2 mt-3 sm:mt-4 shadow-xl shadow-[var(--primary)]/10 hover:shadow-[var(--primary)]/20 active:scale-[0.98] transition-all"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <LoadingSpinner size="sm" label="" />
-                    {t('auth.creating_account')}
-                  </>
-                ) : (
-                  <>
-                    <UserPlus className="w-4 h-4" />
-                    {t('auth.create_account')}
-                  </>
-                )}
-              </Button>
-
-              <p className="text-center text-[10px] sm:text-xs text-gray-400 pt-3 sm:pt-4 font-bold uppercase tracking-widest">
-                {t('auth.have_account')}{' '}
-                <Link 
-                  href={redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login'} 
-                  className="text-[var(--primary)] font-black hover:underline underline-offset-4 decoration-2"
-                >
-                  {t('auth.sign_in')}
-                </Link>
-              </p>
-            </form>
-          )}
+          {/* Card footer */}
+          <div className="px-8 lg:px-10 xl:px-12 py-5 border-t border-gray-100/60">
+            <p className="text-[8px] font-black text-gray-300 uppercase tracking-[0.35em]">
+              By joining, you agree to our{' '}
+              <Link href="/terms" className="hover:text-[var(--accent)] transition-colors">Terms</Link>
+              {' & '}
+              <Link href="/privacy" className="hover:text-[var(--accent)] transition-colors">Privacy Policy</Link>
+            </p>
+          </div>
         </div>
+
       </div>
+
+      {/* Back to home — bottom of page */}
+      <div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 opacity-0 animate-reveal-up"
+        style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}
+      >
+        <Link
+          href="/"
+          className="text-[8px] font-black text-white/20 uppercase tracking-[0.35em] hover:text-[var(--accent)]/60 transition-colors"
+        >
+          ← Back to StayNest
+        </Link>
+      </div>
+
     </div>
   )
 }

@@ -49,11 +49,13 @@ export async function updateProperty(id: string, input: UpdatePropertyInput) {
 
   try {
     // 5. Execute Update
+    const { house_rules, ...rest } = input as any
     const updatedProperty = await prisma.property.update({
       where: { id },
       data: {
-        ...input,
-        status: input.status || currentStatus
+        ...rest,
+        status: input.status || currentStatus,
+        ...(house_rules !== undefined ? { house_rules } : {})
       }
     })
 

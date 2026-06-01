@@ -1,6 +1,6 @@
 import { requireRole } from '@/lib/auth/requireRole'
 import Link from 'next/link'
-import { Home, LayoutDashboard, Building2, Users, Settings, CalendarCheck, BarChart3 } from 'lucide-react'
+import { Home, LayoutDashboard, Building2, Users, Settings, CalendarCheck, BarChart3, Star } from 'lucide-react'
 import { AdminHeaderActions } from '@/components/admin/admin-header-actions'
 
 export default async function AdminLayout({
@@ -12,11 +12,12 @@ export default async function AdminLayout({
   await requireRole(['admin'])
 
   const navItems = [
-    { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { href: "/admin/properties", icon: Building2, label: "Properties" },
-    { href: "/admin/bookings", icon: CalendarCheck, label: "Bookings" },
-    { href: "/admin/financials", icon: BarChart3, label: "Financials" },
-    { href: "/admin/users", icon: Users, label: "Users" },
+    { href: "/admin/dashboard",  icon: LayoutDashboard, label: "Dashboard"   },
+    { href: "/admin/properties", icon: Building2,       label: "Properties"  },
+    { href: "/admin/bookings",   icon: CalendarCheck,   label: "Bookings"    },
+    { href: "/admin/financials", icon: BarChart3,       label: "Financials"  },
+    { href: "/admin/users",      icon: Users,           label: "Users"       },
+    { href: "/admin/reviews",    icon: Star,            label: "Reviews"     },
   ]
 
   return (

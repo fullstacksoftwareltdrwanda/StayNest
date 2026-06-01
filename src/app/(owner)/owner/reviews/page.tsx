@@ -16,10 +16,10 @@ export default async function OwnerReviewsPage() {
           subtitle="See what guests are saying about your properties."
         />
 
-        <div className="mt-12 grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4">
           {reviews.length > 0 ? (
             reviews.map((review: any) => (
-              <div key={review.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all group">
+              <div key={review.id} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:shadow-black/[0.03] transition-all group">
                 <div className="flex flex-col md:flex-row justify-between gap-8">
                   <div className="flex-1">
                     <div className="flex items-center space-x-1 mb-4">
@@ -65,12 +65,12 @@ export default async function OwnerReviewsPage() {
               </div>
             ))
           ) : (
-            <div className="py-32 text-center bg-white rounded-[3rem] border border-gray-100 shadow-sm mt-12">
-               <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <MessageSquare className="w-10 h-10 text-gray-200" />
+            <div className="py-14 px-8 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
+               <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-100">
+                  <MessageSquare className="w-7 h-7 text-gray-200" />
                </div>
-               <h3 className="text-xl font-black text-gray-900 mb-2">No reviews yet</h3>
-               <p className="text-gray-500 font-medium max-w-xs mx-auto">When guests leave feedback for your properties, they will appear here.</p>
+               <h3 className="text-base font-black text-gray-900 mb-1 tracking-tight">No reviews yet</h3>
+               <p className="text-sm font-medium text-gray-400 max-w-xs mx-auto">When guests leave feedback for your properties, they will appear here.</p>
             </div>
           )}
         </div>

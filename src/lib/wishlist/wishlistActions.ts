@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
 import { PropertySearchResult } from '@/types/search'
+import { getPrimaryPricingUnit } from '@/types/property'
 
 export async function toggleWishlist(propertyId: string) {
   try {
@@ -93,6 +94,12 @@ export async function getUserWishlist() {
         ? parseFloat((ratings.reduce((a: number, b: number) => a + b, 0) / reviewCount).toFixed(1))
         : 0
 
+      const pricingUnit = getPrimaryPricingUnit({
+        offers_hourly: p.offers_hourly,
+        offers_daily: p.offers_daily,
+        offers_monthly: p.offers_monthly,
+      })
+
       return {
         id: p.id,
         name: p.name,
@@ -106,7 +113,11 @@ export async function getUserWishlist() {
         capacity: roomCapacities.length > 0 ? Math.max(...roomCapacities) : 0,
         average_rating: avgRating,
         review_count: reviewCount,
-        is_wishlisted: true
+        is_wishlisted: true,
+        pricing_unit: pricingUnit,
+        offers_daily: p.offers_daily,
+        offers_monthly: p.offers_monthly,
+        offers_hourly: p.offers_hourly,
       } as PropertySearchResult
     }).filter((p): p is PropertySearchResult => p !== null)
   } catch (error) {

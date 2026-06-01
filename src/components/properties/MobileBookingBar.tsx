@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useSession } from 'next-auth/react'
 import { ensureWholeUnitRoom } from '@/lib/rooms/ensureWholeUnitRoom'
 import { toast } from 'sonner'
+import { getPrimaryPricingUnit, getPricingUnitLabel } from '@/types/property'
 
 interface MobileBookingBarProps {
   property: Property
@@ -40,6 +41,12 @@ export function MobileBookingBar({ property, rooms, averageRating, reviewCount }
 
   const isWholeUnitNoRoom = property.is_whole_unit && rooms.length === 0
   const effectiveDailyPrice = Number(property.daily_price) || Number(property.starting_price) || 0
+  const primaryPricingUnit = getPrimaryPricingUnit({
+    offers_hourly: property.offers_hourly,
+    offers_daily: property.offers_daily,
+    offers_monthly: property.offers_monthly,
+  })
+  const pricingUnitLabel = getPricingUnitLabel(primaryPricingUnit)
   
   const selectedRoom = useMemo(() => rooms.find(r => r.id === selectedRoomId), [rooms, selectedRoomId])
   
@@ -150,7 +157,7 @@ export function MobileBookingBar({ property, rooms, averageRating, reviewCount }
               <span className="text-lg font-black text-gray-900 tracking-tight">
                 {formatPrice(displayPrice)}
               </span>
-              <span className="text-xs font-medium text-gray-500 mb-0.5">/ night</span>
+              <span className="text-xs font-medium text-gray-500 mb-0.5">{pricingUnitLabel}</span>
             </div>
             <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
               <Star className="w-3 h-3 text-[var(--accent)] fill-current" />
@@ -344,7 +351,7 @@ export function MobileBookingBar({ property, rooms, averageRating, reviewCount }
                               <p className="font-bold text-gray-900">{room.name}</p>
                               <p className="text-xs text-gray-500 mt-1">{room.capacity} guests · {room.bed_type}</p>
                             </div>
-                            <span className="text-base font-bold text-[var(--primary)]">{formatPrice(room.price_per_night)}<span className="text-xs text-gray-400 font-medium"> /night</span></span>
+                            <span className="text-base font-bold text-[var(--primary)]">{formatPrice(room.price_per_night)}<span className="text-xs text-gray-400 font-medium"> {pricingUnitLabel}</span></span>
                           </div>
                         </button>
                       ))}

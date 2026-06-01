@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useSession } from 'next-auth/react'
 import { ensureWholeUnitRoom } from '@/lib/rooms/ensureWholeUnitRoom'
 import { toast } from 'sonner'
+import { getPrimaryPricingUnit, getPricingUnitLabel } from '@/types/property'
 
 interface PropertyStickyBookingProps {
   property: Property
@@ -51,6 +52,13 @@ export function PropertyStickyBooking({ property, rooms, averageRating, reviewCo
     to: addDays(startOfToday(), 3)
   })
   const [guests, setGuests] = useState({ adults: 2, children: 0, infants: 0 })
+  const primaryPricingUnit = getPrimaryPricingUnit({
+    offers_hourly: property.offers_hourly,
+    offers_daily: property.offers_daily,
+    offers_monthly: property.offers_monthly,
+  })
+  const pricingUnitLabel = getPricingUnitLabel(primaryPricingUnit)
+
   const [rateType, setRateType] = useState<'daily' | 'monthly'>(
     property.offers_monthly && !property.offers_daily ? 'monthly' : 'daily'
   )
@@ -175,7 +183,7 @@ export function PropertyStickyBooking({ property, rooms, averageRating, reviewCo
             <span className="text-2xl font-black text-gray-900 tracking-tight">
               {formatPrice(displayPrice)}
             </span>
-            <span className="text-sm font-medium text-gray-500 mb-1">/ night</span>
+            <span className="text-sm font-medium text-gray-500 mb-1">{pricingUnitLabel}</span>
           </div>
           
           <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900">

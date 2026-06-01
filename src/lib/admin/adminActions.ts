@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { createNotification } from '@/lib/notifications/createNotification'
 import { isAdmin } from '@/lib/auth/access'
-import { format } from 'date-fns'
+import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns'
 
 export async function getPlatformProperties(status?: string) {
   const isSystemAdmin = await isAdmin()
@@ -449,15 +449,267 @@ export async function deleteReview(reviewId: string) {
   if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
 
   try {
-    await prisma.review.delete({
-      where: { id: reviewId }
-    })
-
+    await prisma.review.delete({ where: { id: reviewId } })
     revalidatePath('/admin/reviews')
     revalidatePath('/admin/dashboard')
   } catch (error) {
     console.error('Error deleting review:', error)
     throw error
   }
+}
+
+export async function cancelBooking(bookingId: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  try {
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        property: { select: { name: true } },
+        user: { select: { id: true, full_name: true } }
+      }
+    })
+    if (!booking) throw new Error('Booking not found')
+
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'cancelled' }
+    })
+
+    await createNotification({
+      user_id: booking.user_id,
+      title: 'Booking Cancelled',
+      message: `Your booking for ${booking.property?.name || 'a property'} has been cancelled by an administrator.`,
+      type: 'booking'
+    })
+
+    revalidatePath('/admin/bookings')
+    revalidatePath('/admin/dashboard')
+    revalidatePath('/bookings')
+    return { success: true }
+  } catch (error) {
+    console.error('CANCEL BOOKING ERROR:', error)
+    throw error
+  }
+}
+
+export async function suspendUser(userId: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  try {
+    await prisma.profile.update({
+      where: { id: userId },
+      data: { status: 'suspended' }
+    })
+    revalidatePath('/admin/users')
+  } catch (error) {
+    console.error('Error suspending user:', error)
+    throw error
+  }
+}
+
+export async function unsuspendUser(userId: string) {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  try {
+    await prisma.profile.update({
+      where: { id: userId },
+      data: { status: null }
+    })
+    revalidatePath('/admin/users')
+  } catch (error) {
+    console.error('Error unsuspending user:', error)
+    throw error
+  }
+}
+
+// ─── Dashboard Chart Data ──────────────────────────────────────────────────
+
+export interface MonthlyPoint {
+  month: string   // "Jan 24"
+  revenue: number
+  bookings: number
+  users: number
+}
+
+export interface StatusBreakdown {
+  name: string
+  value: number
+  color: string
+}
+
+export interface DashboardChartData {
+  monthly: MonthlyPoint[]
+  propertyStatus: StatusBreakdown[]
+  bookingStatus: StatusBreakdown[]
+  paymentStatus: StatusBreakdown[]
+  topProperties: { name: string; revenue: number; bookings: number }[]
+  recentBookings: {
+    id: string
+    property: string
+    guest: string
+    amount: number
+    status: string
+    check_in: string
+    check_out: string
+    created_at: string
+    pricing_unit: string
+  }[]
+}
+
+export async function getDashboardChartData(): Promise<DashboardChartData> {
+  const isSystemAdmin = await isAdmin()
+  if (!isSystemAdmin) throw new Error('Unauthorized: Admin access required')
+
+  const now = new Date()
+  const twelveMonthsAgo = subMonths(startOfMonth(now), 11)
+
+  // Fetch raw time-series data (last 12 months)
+  const [rawPayments, rawBookings, rawProfiles, propertyStatuses, bookingStatuses, paymentStatuses, allPropertyPayments, latestBookings] = await Promise.all([
+    // Payments in last 12 months
+    prisma.payment.findMany({
+      where: { created_at: { gte: twelveMonthsAgo } },
+      select: { amount: true, status: true, created_at: true }
+    }),
+    // Bookings in last 12 months
+    prisma.booking.findMany({
+      where: { created_at: { gte: twelveMonthsAgo } },
+      select: { id: true, status: true, created_at: true }
+    }),
+    // New users in last 12 months
+    prisma.profile.findMany({
+      where: { created_at: { gte: twelveMonthsAgo } },
+      select: { id: true, created_at: true }
+    }),
+    // Property status counts
+    prisma.property.groupBy({
+      by: ['status'],
+      _count: { id: true }
+    }),
+    // Booking status counts (all time)
+    prisma.booking.groupBy({
+      by: ['status'],
+      _count: { id: true }
+    }),
+    // Payment status counts
+    prisma.payment.groupBy({
+      by: ['status'],
+      _count: { id: true }
+    }),
+    // All payments with property for top properties
+    prisma.payment.findMany({
+      where: { status: 'paid' },
+      select: {
+        amount: true,
+        booking: {
+          select: {
+            property: { select: { id: true, name: true } }
+          }
+        }
+      }
+    }),
+    // 10 most recent bookings with context
+    prisma.booking.findMany({
+      take: 10,
+      orderBy: { created_at: 'desc' },
+      include: {
+        property: { select: { name: true } },
+        user: { select: { full_name: true } },
+        payment: { select: { amount: true } }
+      }
+    })
+  ])
+
+  // ── Build monthly time-series (last 12 months, filled gaps) ──────────────
+  const monthly: MonthlyPoint[] = []
+  for (let i = 11; i >= 0; i--) {
+    const monthStart = startOfMonth(subMonths(now, i))
+    const monthEnd = endOfMonth(monthStart)
+    const label = format(monthStart, 'MMM yy')
+
+    const revenue = rawPayments
+      .filter(p => p.status === 'paid' && new Date(p.created_at) >= monthStart && new Date(p.created_at) <= monthEnd)
+      .reduce((sum, p) => sum + Number(p.amount), 0)
+
+    const bookingsCount = rawBookings
+      .filter(b => new Date(b.created_at) >= monthStart && new Date(b.created_at) <= monthEnd)
+      .length
+
+    const usersCount = rawProfiles
+      .filter(u => new Date(u.created_at) >= monthStart && new Date(u.created_at) <= monthEnd)
+      .length
+
+    monthly.push({ month: label, revenue: Math.round(revenue), bookings: bookingsCount, users: usersCount })
+  }
+
+  // ── Property status breakdown ─────────────────────────────────────────────
+  const PROP_COLORS: Record<string, string> = {
+    approved: '#10b981',
+    pending:  '#f59e0b',
+    rejected: '#ef4444',
+    draft:    '#94a3b8',
+  }
+  const propertyStatus: StatusBreakdown[] = propertyStatuses.map(s => ({
+    name: s.status.charAt(0).toUpperCase() + s.status.slice(1),
+    value: s._count.id,
+    color: PROP_COLORS[s.status] || '#94a3b8'
+  }))
+
+  // ── Booking status breakdown ──────────────────────────────────────────────
+  const BOOKING_COLORS: Record<string, string> = {
+    confirmed: '#10b981',
+    pending:   '#f59e0b',
+    cancelled: '#ef4444',
+    completed: '#6366f1',
+  }
+  const bookingStatus: StatusBreakdown[] = bookingStatuses.map(s => ({
+    name: s.status.charAt(0).toUpperCase() + s.status.slice(1),
+    value: s._count.id,
+    color: BOOKING_COLORS[s.status] || '#94a3b8'
+  }))
+
+  // ── Payment status breakdown ──────────────────────────────────────────────
+  const PAY_COLORS: Record<string, string> = {
+    paid:    '#10b981',
+    pending: '#f59e0b',
+    failed:  '#ef4444',
+  }
+  const paymentStatus: StatusBreakdown[] = paymentStatuses.map(s => ({
+    name: s.status.charAt(0).toUpperCase() + s.status.slice(1),
+    value: s._count.id,
+    color: PAY_COLORS[s.status] || '#94a3b8'
+  }))
+
+  // ── Top properties by revenue ─────────────────────────────────────────────
+  const propMap: Record<string, { name: string; revenue: number; bookings: number }> = {}
+  allPropertyPayments.forEach(p => {
+    const id = p.booking?.property?.id || 'unknown'
+    const name = p.booking?.property?.name || 'Unknown'
+    if (!propMap[id]) propMap[id] = { name, revenue: 0, bookings: 0 }
+    propMap[id].revenue += Number(p.amount)
+    propMap[id].bookings += 1
+  })
+  const topProperties = Object.values(propMap)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 7)
+    .map(p => ({ ...p, revenue: Math.round(p.revenue) }))
+
+  // ── Recent bookings feed ───────────────────────────────────────────────────
+  const recentBookings = latestBookings.map(b => ({
+    id: b.id,
+    property: b.property?.name || 'Unknown',
+    guest: b.user?.full_name || 'Guest',
+    amount: Number(b.payment?.amount || b.total_price),
+    status: b.status,
+    check_in: b.check_in.toISOString(),
+    check_out: b.check_out.toISOString(),
+    created_at: b.created_at.toISOString(),
+    pricing_unit: b.pricing_unit,
+  }))
+
+  return { monthly, propertyStatus, bookingStatus, paymentStatus, topProperties, recentBookings }
 }
 

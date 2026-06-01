@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
+import { getPrimaryPricingUnit } from '@/types/property'
 
 export async function toggleFavorite(propertyId: string) {
   const session = await auth()
@@ -78,6 +79,12 @@ export async function getUserFavorites() {
         ? parseFloat((ratings.reduce((a: number, b: number) => a + b, 0) / reviewCount).toFixed(1))
         : 0
 
+      const pricingUnit = getPrimaryPricingUnit({
+        offers_hourly: p.offers_hourly,
+        offers_daily: p.offers_daily,
+        offers_monthly: p.offers_monthly,
+      })
+
       return {
         id: p.id,
         name: p.name,
@@ -91,7 +98,11 @@ export async function getUserFavorites() {
         capacity: roomCapacities.length > 0 ? Math.max(...roomCapacities) : 0,
         average_rating: avgRating,
         review_count: reviewCount,
-        is_favorited: true
+        is_favorited: true,
+        pricing_unit: pricingUnit,
+        offers_daily: p.offers_daily,
+        offers_monthly: p.offers_monthly,
+        offers_hourly: p.offers_hourly,
       }
     })
   } catch (error) {

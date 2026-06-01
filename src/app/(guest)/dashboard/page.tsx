@@ -24,12 +24,12 @@ export default async function GuestDashboard() {
   return (
     <div className="min-h-screen bg-[var(--background)] pb-24 sm:pb-32 animate-fade-in">
       {/* ─── Dashboard Header ─────────────────── */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-[var(--warm-gray)] py-12 sm:py-16 mb-12 sm:mb-16">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-[var(--warm-gray)] py-8 sm:py-10 mb-8 sm:mb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-10">
             <div className="flex items-center gap-6 sm:gap-8 group">
               <div className="relative">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] rounded-[2rem] flex items-center justify-center text-white text-4xl font-black shadow-2xl shadow-[var(--primary)]/20 transition-transform group-hover:scale-105 duration-500">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] rounded-[1.5rem] flex items-center justify-center text-white text-2xl font-black shadow-xl shadow-[var(--primary)]/20 transition-transform group-hover:scale-105 duration-500">
                   {profile?.full_name?.charAt(0) || 'G'}
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-[var(--accent)] rounded-2xl flex items-center justify-center border-4 border-white shadow-lg text-white">
@@ -39,7 +39,7 @@ export default async function GuestDashboard() {
               
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tighter leading-none">
+                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter leading-tight">
                     {profile?.full_name?.split(' ')[0] || 'Guest'}'s Hub
                   </h1>
                   <span className="animate-pulse duration-[3s]">
@@ -81,14 +81,14 @@ export default async function GuestDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+
           {/* ─── Main Content Areas (8/12 = 66%) ──────────────── */}
-          <div className="lg:col-span-8 space-y-12">
-            
+          <div className="lg:col-span-8 space-y-8">
+
             {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <Card interactive padding="lg" className="rounded-[2.5rem] border-white/60 shadow-xl shadow-black/[0.02] max-w-lg mx-auto w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <Card interactive padding="lg" className="rounded-2xl border-white/60 shadow-sm w-full">
                 <CardHeader 
                   title="My Bookings"
                   subtitle="Your personal travels"
@@ -106,8 +106,8 @@ export default async function GuestDashboard() {
                 </CardContent>
               </Card>
 
-              <Card interactive padding="lg" className="rounded-[2.5rem] border-white/60 shadow-xl shadow-black/[0.02] max-w-lg mx-auto w-full">
-                <CardHeader 
+              <Card interactive padding="lg" className="rounded-2xl border-white/60 shadow-sm w-full">
+                <CardHeader
                   title="Wishlist"
                   subtitle="Coming Soon"
                   icon={<Heart className="w-5 h-5 text-rose-400" />}
@@ -124,7 +124,7 @@ export default async function GuestDashboard() {
             </div>
 
             {/* Verification Status Card */}
-            <Card padding="lg" className="rounded-[2.5rem] bg-white border-white/60 shadow-xl shadow-black/[0.02]">
+            <Card padding="lg" className="rounded-2xl bg-white border-gray-100 shadow-sm">
               <CardHeader 
                 title="Account Verification"
                 subtitle="Secure your experience"
@@ -165,28 +165,28 @@ export default async function GuestDashboard() {
           {/* ─── Sidebar Hosting Section (4/12 = 33%) ─────────── */}
           <div className="lg:col-span-4 space-y-8">
             {profile.role === 'owner' ? (
-              <Card padding="none" variant="default" className="rounded-[2.5rem] sm:rounded-[3.5rem] border-white/60 shadow-2xl shadow-black/[0.04] h-full overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--primary)]/5 rounded-full -mr-24 -mt-24 blur-3xl transition-transform group-hover:scale-110 duration-700" />
-                
-                <div className="p-10 sm:p-14 h-full flex flex-col justify-between min-h-[400px] relative z-10">
-                  <div className="space-y-6">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[var(--primary)]/10 shadow-sm animate-pulse-glow">
+              <Card padding="none" variant="default" className="rounded-2xl border-gray-100 shadow-sm overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)]/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+
+                <div className="p-7 flex flex-col gap-5 relative z-10">
+                  <div className="space-y-3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-[10px] font-black uppercase tracking-widest border border-[var(--primary)]/10">
                       <Sparkles className="w-3 h-3" />
                       Professional Host
                     </div>
-                    <h3 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tighter leading-tight">
-                      Elevate your <br /> guest experience
+                    <h3 className="text-xl font-black text-gray-900 tracking-tighter leading-tight">
+                      Manage your listings
                     </h3>
-                    <p className="text-gray-500 font-medium text-lg leading-relaxed text-balance opacity-80">
-                      Manage your properties with sophisticated tools and professional insights.
+                    <p className="text-sm font-medium text-gray-500 leading-relaxed">
+                      View bookings, earnings, and manage your properties.
                     </p>
                   </div>
-                  
-                  <Link href="/owner/properties" className="mt-12">
-                    <Button 
-                      size="lg" 
-                      className="w-full h-18 sm:h-20 rounded-2xl sm:rounded-[1.5rem] bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[var(--primary)]/20 active:scale-95 group/btn"
-                      rightIcon={<ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform duration-500" />}
+
+                  <Link href="/owner/properties">
+                    <Button
+                      size="md"
+                      className="w-full h-11 rounded-xl bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)] font-black uppercase tracking-widest shadow-lg shadow-[var(--primary)]/20 active:scale-95 group/btn text-[10px]"
+                      rightIcon={<ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />}
                     >
                       Manage Catalog
                     </Button>

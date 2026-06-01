@@ -24,13 +24,18 @@ export async function createProperty(formData: any) {
     is_whole_unit,
     offers_daily,
     offers_monthly,
+    offers_hourly,
     daily_price,
     monthly_price,
-    max_guests
+    hourly_price,
+    max_guests,
+    house_rules
   } = formData
 
+  // Derive base price for room creation
+  const basePrice = offers_hourly && !offers_daily ? (hourly_price || 0) : (daily_price || 0)
+
   try {
-    // 1. Create Property
     const property = await prisma.property.create({
       data: {
         owner_id: session.user.id,
@@ -49,20 +54,23 @@ export async function createProperty(formData: any) {
         is_whole_unit,
         offers_daily,
         offers_monthly,
-        daily_price,
+        offers_hourly: offers_hourly || false,
+        daily_price: offers_daily ? daily_price : null,
         monthly_price: offers_monthly ? monthly_price : null,
-        max_guests
+        hourly_price: offers_hourly ? hourly_price : null,
+        max_guests,
+        house_rules: house_rules || {}
       }
     })
 
-    // 2. Automated Room Creation for Whole Unit
+    // Auto-create room for whole-unit listings
     if (is_whole_unit) {
       await prisma.room.create({
         data: {
           property_id: property.id,
           name: `${name} (Entire Unit)`,
           description: `Full access to the entire ${type.toLowerCase()}.`,
-          price_per_night: daily_price || 0,
+          price_per_night: basePrice,
           capacity: max_guests || 1,
           available_rooms: 1,
           bed_type: 'Default',
@@ -72,18 +80,17 @@ export async function createProperty(formData: any) {
       })
     }
 
-    // 3. Mark host as onboarded (just in case)
     await prisma.profile.update({
       where: { id: session.user.id },
-      data: { 
+      data: {
         isHostOnboarded: true,
-        role: 'owner' 
+        role: 'owner'
       }
     })
 
     revalidatePath('/owner/dashboard')
     revalidatePath('/')
-    
+
     return { success: true, propertyId: property.id }
   } catch (error: any) {
     console.error('Error creating property:', error)

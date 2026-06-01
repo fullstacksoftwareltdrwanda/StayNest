@@ -6,7 +6,7 @@ import { PropertySearchResult } from '@/types/search'
 import { MapPin, Star, Home } from 'lucide-react'
 import { SavePropertyButton } from '../wishlist/save-property-button'
 import { useSettings } from '@/context/SettingsContext'
-import { cn } from '@/utils/cn'
+import { getPricingUnitLabel } from '@/types/property'
 
 interface PropertyResultCardProps {
   property: PropertySearchResult
@@ -15,20 +15,17 @@ interface PropertyResultCardProps {
 
 export function PropertyResultCard({ property, index = 0 }: PropertyResultCardProps) {
   const { t, formatPrice } = useSettings()
+  const pricingLabel = getPricingUnitLabel(property.pricing_unit ?? 'night')
 
   return (
-    <div 
+    <div
       id={`property-${property.id}`}
-      className="group relative animate-card-enter opacity-0" 
-      style={{ 
-        animationFillMode: 'forwards',
-        animationDelay: `${index * 80}ms`
-      }}
+      className="group relative animate-card-enter opacity-0"
+      style={{ animationFillMode: 'forwards', animationDelay: `${index * 80}ms` }}
     >
       <Link href={`/properties/${property.id}`} className="block cursor-pointer">
-        {/* Card wrapper with sophisticated hover effect */}
         <div className="rounded-[1.5rem] transition-all duration-400 group-hover:-translate-y-1">
-          {/* Image Container */}
+          {/* Image */}
           <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] shadow-sm border border-gray-100 transition-all duration-400 group-hover:shadow-xl group-hover:shadow-[var(--primary)]/5">
             {property.main_image_url ? (
               <Image
@@ -44,21 +41,30 @@ export function PropertyResultCard({ property, index = 0 }: PropertyResultCardPr
                 <Home className="w-10 h-10 opacity-50" />
               </div>
             )}
-            
-            {/* Elegant Guest Favorite Badge */}
+
+            {/* Guest Favorite badge */}
             {(property.average_rating || 0) >= 4.8 && (
-              <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-white/95 backdrop-blur-md rounded-full shadow-md shadow-black/5 flex items-center gap-1.5 z-10 animate-fade-in border border-white/20">
+              <div className="absolute top-4 left-4 px-3.5 py-1.5 bg-white/95 backdrop-blur-md rounded-full shadow-md flex items-center gap-1.5 z-10 border border-white/20">
                 <Star className="w-3 h-3 text-[var(--accent)] fill-[var(--accent)]" />
                 <span className="text-[10px] font-black text-[var(--foreground)] uppercase tracking-[0.15em] leading-none mt-0.5">
                   Guest Favorite
                 </span>
               </div>
             )}
-            {/* Gradient overlay on hover for premium feel */}
+
+            {/* Pricing unit badge for non-nightly */}
+            {property.pricing_unit && property.pricing_unit !== 'night' && (
+              <div className="absolute top-4 right-12 px-2.5 py-1 bg-amber-500/90 backdrop-blur-md rounded-full z-10">
+                <span className="text-[9px] font-black text-white uppercase tracking-widest">
+                  {property.pricing_unit === 'hour' ? 'Hourly' : 'Monthly'}
+                </span>
+              </div>
+            )}
+
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/80 via-transparent to-transparent opacity-0 group-hover:opacity-10 transition-opacity duration-400" />
           </div>
 
-          {/* Info Footer */}
+          {/* Info */}
           <div className="mt-4 space-y-1 px-1">
             <div className="flex justify-between items-start">
               <h3 className="text-base font-bold text-gray-900 tracking-tight leading-snug line-clamp-1">
@@ -66,27 +72,28 @@ export function PropertyResultCard({ property, index = 0 }: PropertyResultCardPr
               </h3>
               <div className="flex items-center gap-1 ml-3 shrink-0">
                 <Star className="w-3.5 h-3.5 fill-[var(--accent)] text-[var(--accent)]" />
-                <span className="font-bold text-sm text-[var(--foreground)] mt-0.5">{(property.average_rating || 0) > 0 ? property.average_rating : 'New'}</span>
+                <span className="font-bold text-sm text-[var(--foreground)] mt-0.5">
+                  {(property.average_rating || 0) > 0 ? property.average_rating : 'New'}
+                </span>
               </div>
             </div>
-            
+
             <p className="text-[13px] font-medium text-gray-500 capitalize tracking-tight">
-              {t(`common.property_types.${property.type.toLowerCase()}`)} · {property.city}
+              {t(`common.property_types.${property.type.toLowerCase()}`) || property.type} · {property.city}
             </p>
-            
+
             <div className="flex items-baseline gap-1.5 pt-1">
-              <span className="font-extrabold text-[var(--foreground)] text-[15px]">{formatPrice(property.starting_price || 0)}</span>
-              <span className="font-medium text-gray-400 text-xs">/ {t('property.night')}</span>
+              <span className="font-extrabold text-[var(--foreground)] text-[15px]">
+                {formatPrice(property.starting_price || 0)}
+              </span>
+              <span className="font-medium text-gray-400 text-xs">{pricingLabel}</span>
             </div>
           </div>
         </div>
       </Link>
 
-      {/* Action Buttons */}
       <div className="absolute top-4 right-4 z-20">
-        <SavePropertyButton 
-          propertyId={property.id} 
-        />
+        <SavePropertyButton propertyId={property.id} />
       </div>
     </div>
   )

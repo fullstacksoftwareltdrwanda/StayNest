@@ -1,3 +1,5 @@
+import { PricingUnit } from './property'
+
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export interface Booking {
@@ -11,10 +13,11 @@ export interface Booking {
   total_price: number;
   currency: string;
   status: BookingStatus;
+  pricing_unit: PricingUnit;
+  booking_hours?: number;
   created_at: string;
   updated_at: string;
-  
-  // Optional relations
+
   property?: {
     name: string;
     city: string;
@@ -41,4 +44,6 @@ export interface CreateBookingInput {
   total_price: number;
   currency: string;
   converted_price?: number;
+  pricing_unit?: PricingUnit;
+  booking_hours?: number;
 }

@@ -33,11 +33,13 @@ export async function createProperty(input: CreatePropertyInput) {
   try {
     const property = await prisma.$transaction(async (tx) => {
       // 3. Create Property
+      const { house_rules, ...rest } = input as any
       const newProperty = await tx.property.create({
         data: {
-          ...input,
+          ...rest,
           owner_id: userId,
           status: status,
+          house_rules: house_rules ?? {},
         }
       })
 
@@ -78,6 +80,7 @@ export async function createProperty(input: CreatePropertyInput) {
       ...plain,
       daily_price: Number(property.daily_price),
       monthly_price: property.monthly_price ? Number(property.monthly_price) : null,
+      hourly_price: (property as any).hourly_price ? Number((property as any).hourly_price) : null,
       latitude: property.latitude ? Number(property.latitude) : null,
       longitude: property.longitude ? Number(property.longitude) : null,
     } as any

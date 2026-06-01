@@ -36,9 +36,12 @@ export function PropertyForm({ property }: PropertyFormProps) {
     is_whole_unit: property?.is_whole_unit ?? (property?.type ? ['Apartment', 'Villa', 'Guesthouse'].includes(property.type) : false),
     offers_monthly: property?.offers_monthly ?? false,
     offers_daily: property?.offers_daily ?? true,
+    offers_hourly: property?.offers_hourly ?? false,
     monthly_price: property?.monthly_price ?? undefined,
     daily_price: property?.daily_price ?? undefined,
+    hourly_price: property?.hourly_price ?? undefined,
     max_guests: property?.max_guests ?? 1,
+    house_rules: property?.house_rules ?? undefined,
   })
   
   const [customType, setCustomType] = useState('')
